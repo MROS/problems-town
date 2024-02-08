@@ -1,18 +1,15 @@
-import { unstable_noStore as noStore } from "next/cache";
-
 import { CreatePost } from "~/app/_components/create-post";
 import { api } from "~/trpc/server";
 
 export default async function Home() {
-  noStore();
-  const hello = await api.post.hello.query({ text: "from tRPC" });
+  const hello = await api.post.hello({ text: "from tRPC" });
 
   return (
     <main>
       <div>
         <h1>做題小鎮</h1>
         <div className="flex flex-col items-center gap-2">
-          <p className="text-2xl text-white">
+          <p className="text-2xl text-black">
             {hello ? hello.greeting : "Loading tRPC query..."}
           </p>
         </div>
@@ -24,7 +21,7 @@ export default async function Home() {
 }
 
 async function CrudShowcase() {
-  const latestPost = await api.post.getLatest.query();
+  const latestPost = await api.post.getLatest();
 
   return (
     <div className="w-full max-w-xs">
