@@ -2,7 +2,9 @@ import "~/styles/globals.css";
 
 import { Inter } from "next/font/google";
 
-import { TRPCReactProvider } from "~/trpc/react";
+import { Providers } from "./providers";
+import Navigation from "./navigation";
+import SetNameModal from "./setNameModal";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,9 +23,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="zh-Hant">
+    <html lang="zh-Hant" className="light">
       <body className={`font-sans ${inter.variable}`}>
-        <TRPCReactProvider>{children}</TRPCReactProvider>
+        <Providers>
+          <Navigation />
+          <SetNameModal />
+          {children}
+        </Providers>
       </body>
     </html>
   );
