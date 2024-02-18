@@ -1,3 +1,4 @@
+"use client";
 import {
   Navbar,
   NavbarBrand,
@@ -6,8 +7,32 @@ import {
   Link,
   Button,
 } from "@nextui-org/react";
+import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
-export default async function Navigation() {
+export default function Navigation() {
+  const pathname = usePathname();
+  const category = pathname.split("/")[1];
+  const { status, data: session } = useSession();
+
+  const UserStatus = () => {
+    if (pathname == "/auth/signin") {
+      return "登入中...";
+    }
+    switch (status) {
+      case "authenticated":
+        return <div>{session.user.name}</div>;
+      case "loading":
+        return <></>;
+      case "unauthenticated":
+        return (
+          <Button as={Link} color="primary" href="#" variant="flat">
+            <Link href="/api/auth/signin">登入</Link>
+          </Button>
+        );
+    }
+  };
+
   return (
     <Navbar isBordered>
       <NavbarBrand>
@@ -16,27 +41,16 @@ export default async function Navigation() {
         </Link>
       </NavbarBrand>
       <NavbarContent className="hidden gap-4 sm:flex" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Features
-          </Link>
+        <NavbarItem isActive={category == "club"}>
+          <Link href="/club">讀書會</Link>
         </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="#" aria-current="page">
-            Customers
-          </Link>
-        </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="#">
-            Integrations
-          </Link>
+        <NavbarItem isActive={category == "book"}>
+          <Link href="book">藏書</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem>
-          <Button as={Link} color="primary" href="#" variant="flat">
-            登入
-          </Button>
+          <UserStatus />
         </NavbarItem>
       </NavbarContent>
     </Navbar>
