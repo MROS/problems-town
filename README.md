@@ -1,28 +1,48 @@
-# Create T3 App
+# 做題小鎮
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+制定讀書會計劃，互相勾選、批改習題，舉辦期中期末測驗。
 
-## What's next? How do I make an app with this?
+## 建置
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+### 安裝依賴
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+- [Node.js](https://nodejs.org/en/download) (v20 以上)
+    - 建議使用 [nvm](https://nodejs.org/en/download/package-manager#nvm) 安裝
+- [pnpm](https://pnpm.io/installation)
+
+### 下載源碼
+``` sh
+git@github.com:problems-town/problems-town.git
+cd problems-town
+```
+
+### 設定環境變數
+
+``` sh
+cp .env.example .env
+vim .env                    # 依範例檔案中的註解設定環境變數
+```
+
+### 啓動
+``` sh
+pnpm i                      # 安裝 npm 套件
+pnpm db:push                # 灌入資料庫 schema
+pnpm dev                    # 以開發模式啓動（即時編譯、熱更新）
+```
+
+在正式環境中，應預編譯以優化打包體積：
+``` sh
+pnpm build
+pnpm start
+```
+
+
+## 技術棧
+
+本專案採 [T3 Stack](https://create.t3.gg/) 作爲初始模板，承繼使用以下框架/庫：
 
 - [Next.js](https://nextjs.org)
 - [NextAuth.js](https://next-auth.js.org)
 - [Prisma](https://prisma.io)
 - [Tailwind CSS](https://tailwindcss.com)
 - [tRPC](https://trpc.io)
-
-## Learn More
-
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
-
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
