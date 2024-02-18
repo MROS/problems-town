@@ -12,7 +12,7 @@
 
 ### 下載源碼
 ``` sh
-git@github.com:problems-town/problems-town.git
+git clone git@github.com:problems-town/problems-town.git
 cd problems-town
 ```
 
@@ -20,7 +20,7 @@ cd problems-town
 
 ``` sh
 cp .env.example .env
-vim .env                    # 依範例檔案中的註解設定環境變數
+vim .env                    # 依範例檔案中的註解，設定環境變數
 ```
 
 ### 啓動

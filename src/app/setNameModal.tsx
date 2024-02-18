@@ -9,16 +9,31 @@ import {
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { Input } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+
+enum ERROR_MESSAGE {
+  UNKNOWN_ERROR = "未知錯誤",
+  TOO_SHORT = "至少要一個字吧",
+}
 
 export default function SetNameModal() {
   const { status, data: session, update } = useSession();
   const updateName = api.user.updateName.useMutation();
   const router = useRouter();
 
-  const [value, setValue] = useState("");
+  const [name, setName] = useState("");
+  const [invalid, setInvalid] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<null | ERROR_MESSAGE>(null);
+
+  useEffect(() => {
+    if (invalid && name.length > 0) {
+      setInvalid(false);
+      setErrorMessage(null);
+    }
+  }, [invalid, name.length]);
+
   if (status != "authenticated") {
     return <></>;
   }
@@ -29,31 +44,40 @@ export default function SetNameModal() {
     <Modal isOpen={true} hideCloseButton={true}>
       <ModalContent>
         <ModalHeader className="flex flex-col gap-1">
-          您已成功註冊，請設定使用者名稱
+          您已成功註冊，請設定基本資料
         </ModalHeader>
         <ModalBody>
           <Input
-            label="使用者名稱"
+            label="暱稱"
             placeholder="卍乂殺神墮天乂卍"
             classNames={{ input: ["placeholder:text-default-400"] }}
-            value={value}
-            onValueChange={setValue}
+            value={name}
+            onValueChange={setName}
+            isInvalid={invalid}
+            errorMessage={errorMessage}
           />
         </ModalBody>
         <ModalFooter>
           <Button
             color="primary"
             onClick={() => {
+              if (name.length == 0) {
+                setInvalid(true);
+                setErrorMessage(ERROR_MESSAGE.TOO_SHORT);
+                return;
+              }
+
               updateName.mutate(
-                { name: value },
+                { name: name },
                 {
                   onSuccess: () => {
-                    update()
-                      .then(() => console.log("成功設定名稱"))
-                      .catch((err) => console.log(err));
+                    update().catch((err) => console.log(err));
                     router.refresh();
                   },
-                  onError: (err) => console.log(err),
+                  onError: (err) => {
+                    setErrorMessage(ERROR_MESSAGE.UNKNOWN_ERROR);
+                    console.error(err);
+                  },
                 },
               );
             }}
