@@ -4,16 +4,21 @@ import {
   NavbarBrand,
   NavbarContent,
   NavbarItem,
-  Link,
   Button,
+  Spinner,
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navigation() {
+  const { status, data: session } = useSession();
   const pathname = usePathname();
   const category = pathname.split("/")[1];
-  const { status, data: session } = useSession();
 
   const UserStatus = () => {
     if (pathname == "/auth/signin") {
@@ -21,9 +26,20 @@ export default function Navigation() {
     }
     switch (status) {
       case "authenticated":
-        return <div>{session.user.name}</div>;
+        return (
+          <Dropdown>
+            <DropdownTrigger>
+              <Button variant="bordered">{session.user.name}</Button>
+            </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownItem key="signout" href="/api/auth/signout">
+                登出
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        );
       case "loading":
-        return <></>;
+        return <Spinner />;
       case "unauthenticated":
         return (
           <Button as={Link} color="primary" href="#" variant="flat">
