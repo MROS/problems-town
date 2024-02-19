@@ -11,7 +11,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -32,7 +32,12 @@ export default function Navigation() {
               <Button variant="bordered">{session.user.name}</Button>
             </DropdownTrigger>
             <DropdownMenu>
-              <DropdownItem key="signout" href="/api/auth/signout">
+              <DropdownItem
+                key="signout"
+                onClick={async () => {
+                  await signOut();
+                }}
+              >
                 登出
               </DropdownItem>
             </DropdownMenu>
