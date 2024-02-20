@@ -2,9 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-
 [data-overlay-container="true"] {
-  height: 100vh;
+  height: 100svh;
   display: flex;
   flex-direction: column;
 }
