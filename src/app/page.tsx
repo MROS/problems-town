@@ -4,7 +4,7 @@ export default async function Home() {
   const session = await getServerAuthSession();
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center">
+    <main className="flex grow flex-col items-center justify-center">
       <div className="container flex flex-col items-center justify-center">
         <div className="flex flex-col items-center gap-2">
           <div className="flex flex-col items-center justify-center">
