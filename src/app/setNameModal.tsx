@@ -8,10 +8,10 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { Input } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
+import { MyInput } from "./_components/myInput";
 
 enum ERROR_MESSAGE {
   UNKNOWN_ERROR = "未知錯誤",
@@ -47,10 +47,9 @@ export default function SetNameModal() {
           您已成功註冊，請設定基本資料
         </ModalHeader>
         <ModalBody>
-          <Input
+          <MyInput
             label="暱稱"
             placeholder="卍乂殺神墮天乂卍"
-            classNames={{ input: ["placeholder:text-default-400"] }}
             value={name}
             onValueChange={setName}
             isInvalid={invalid}

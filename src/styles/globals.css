@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 令 next ui 最外層 div 的高度覆蓋整個瀏覽器頁面 */
 [data-overlay-container="true"] {
   height: 100svh;
   display: flex;

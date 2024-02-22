@@ -13,7 +13,6 @@ import {
   Link,
 } from "@nextui-org/react";
 import { signOut, useSession } from "next-auth/react";
-// import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Navigation() {
@@ -67,7 +66,7 @@ export default function Navigation() {
           <Link href="/club">讀書會</Link>
         </NavbarItem>
         <NavbarItem isActive={category == "book"}>
-          <Link href="book">藏書</Link>
+          <Link href="/book">藏書</Link>
         </NavbarItem>
       </NavbarContent>
       <NavbarContent justify="end">
