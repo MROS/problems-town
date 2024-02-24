@@ -25,7 +25,7 @@ export default function NewBook() {
 
   return (
     <main className="flex grow flex-col">
-      <div className="flex w-screen flex-col items-center px-4 pt-10">
+      <div className="flex w-full flex-col items-center px-4 pt-10">
         <div className="flex w-full max-w-lg flex-col">
           <h1 className="text-lg font-bold">新增書籍</h1>
           <Divider className="mb-4 mt-2" />
@@ -87,7 +87,7 @@ export default function NewBook() {
             <MyInput
               isRequired
               labelPlacement="outside"
-              placeholder="1996/12/16 或 1996/12 或 1996"
+              placeholder="1996-12-16"
               label="出版日期"
             />
             <MyInput
@@ -97,24 +97,24 @@ export default function NewBook() {
               label="ISBN"
             />
             <Divider />
-            <div>
-              <div className="mb-1 flex items-end">
-                <span className="mr-4">目錄大綱／習題編排（選填）</span>
-                <ImportContents setBookContents={setBookContents} />
-              </div>
-              <span className="flex items-end text-xs text-gray-500">
-                <FaCircleInfo className="mb-[2px] mr-1" />{" "}
-                <div>書本的章節目錄，通常可以在賣書網站中找到</div>
-              </span>
+          </div>
+          <div className="mt-4">
+            <div className="mb-1 flex items-end">
+              <span className="mr-4">目錄大綱／習題編排（選填）</span>
+              <ImportContents setBookContents={setBookContents} />
             </div>
-            <ContentsTree
-              bookContents={bookContents}
-              setBookContents={setBookContents}
-            />
-            <Divider />
-            <div className="flex justify-end">
-              <Button color="primary">新增書籍</Button>
-            </div>
+            <span className="flex items-end text-xs text-gray-500">
+              <FaCircleInfo className="mb-[2px] mr-1" />{" "}
+              <div>書本的章節目錄，通常可以在賣書網站中找到</div>
+            </span>
+          </div>
+          <ContentsTree
+            bookContents={bookContents}
+            setBookContents={setBookContents}
+          />
+          <Divider className="mb-4" />
+          <div className="mb-8 flex justify-end">
+            <Button color="primary">新增書籍</Button>
           </div>
         </div>
       </div>
