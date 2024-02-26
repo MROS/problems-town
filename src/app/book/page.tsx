@@ -17,7 +17,7 @@ export default function Book() {
                 variant="solid"
                 color="primary"
                 startContent={<FaPlus />}
-                onClick={() => router.push("/book/new")}
+                onClick={() => router.push("/book/create")}
               >
                 新增
               </Button>

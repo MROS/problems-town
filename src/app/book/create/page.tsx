@@ -8,19 +8,33 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import { FaCircleInfo } from "react-icons/fa6";
-import { MyInput } from "~/app/_components/myInput";
+import { ArrayInput, MyInput, ZodInput } from "~/app/_components/myInput";
 import { ImportContents } from "./importContentsModal";
 import { ContentsTree, type TreeNode } from "./contentsTree";
+import { z } from "~/utils/chineseZod";
 
-const BOOK_FORMS = [
+export const ALL_BOOK_FORMS = ["現代出版品", "電子書", "古籍"] as const;
+
+// export type BookForm = "現代出版品" | "電子書" | "古籍";
+export type BookForm = (typeof ALL_BOOK_FORMS)[number];
+
+const BOOK_FORMS: { name: BookForm; disabled?: boolean }[] = [
   { name: "現代出版品" },
   { name: "電子書", disabled: true },
   { name: "古籍", disabled: true },
 ];
 
+const bookNameSchema = z.string().min(1).max(256);
+const bookAuthorSchema = z.string().min(1).max(128);
+const ISBNSchema = z.string().length(13);
+
 export default function NewBook() {
   const [bookForm, setBookForm] = useState("現代出版品");
+  const [bookName, setBookName] = useState("");
+  const [bookAuthors, setBookAuthors] = useState([""]);
   const [isTranslated, setIsTranslated] = useState(false);
+  const [bookTranslators, setBookTranslators] = useState<null | string[]>(null);
+  const [bookISBN, setBookISBN] = useState("");
   const [bookContents, setBookContents] = useState<TreeNode[]>([]);
 
   return (
@@ -51,14 +65,20 @@ export default function NewBook() {
                 );
               })}
             </Select>
-            <MyInput
+            <ZodInput
+              zodSchema={bookNameSchema}
+              value={bookName}
+              onValueChange={setBookName}
               isRequired
               labelPlacement="outside"
               placeholder="連城訣"
               label="書名"
             />
-            {/* TODO: 支援複數名作者 */}
-            <MyInput
+            <ArrayInput
+              zodSchema={bookAuthorSchema}
+              values={bookAuthors}
+              onValuesChange={setBookAuthors}
+              addText="新增另一位作者"
               isRequired
               labelPlacement="outside"
               placeholder="金庸"
@@ -68,33 +88,47 @@ export default function NewBook() {
               <Checkbox
                 size="sm"
                 isSelected={isTranslated}
-                onValueChange={setIsTranslated}
+                onValueChange={(value) => {
+                  setIsTranslated(value);
+                  if (value == false) {
+                    setBookTranslators(null);
+                  } else {
+                    setBookTranslators([""]);
+                  }
+                }}
               >
                 本書爲翻譯書籍？
               </Checkbox>
-              {/* TODO: 支援複數名譯者 */}
-              {isTranslated ? (
-                <MyInput
-                  className="ml-6"
-                  isRequired
-                  labelPlacement="outside-left"
-                  label="譯者"
-                />
+              {isTranslated && bookTranslators ? (
+                <div className="ml-6 mt-2">
+                  <ArrayInput
+                    zodSchema={bookAuthorSchema}
+                    values={bookTranslators}
+                    onValuesChange={setBookTranslators}
+                    addText="新增另一位譯者"
+                    isRequired
+                    placeholder="請輸入譯者名字"
+                    labelPlacement="outside"
+                    label="譯者"
+                  />
+                </div>
               ) : (
                 <></>
               )}
             </div>
-            <MyInput
-              isRequired
-              labelPlacement="outside"
-              placeholder="1996-12-16"
-              label="出版日期"
-            />
-            <MyInput
+            <ZodInput
+              zodSchema={ISBNSchema}
+              value={bookISBN}
+              onValueChange={setBookISBN}
               isRequired
               labelPlacement="outside"
               placeholder="9789573229322"
               label="ISBN"
+            />
+            <MyInput
+              labelPlacement="outside"
+              placeholder="1996-12-16"
+              label="出版日期（選填）"
             />
             <Divider />
           </div>
