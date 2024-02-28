@@ -59,7 +59,7 @@ model VerificationToken {
 model Book {
     id           Int       @id @default(autoincrement())
     name         String
-    ISBN         String    @unique
+    ISBN         String?   @unique
     authors      String[]
     isTranslated Boolean
     translators  String[]

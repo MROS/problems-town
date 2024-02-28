@@ -16,7 +16,6 @@ export default async function Book() {
             <div className="font-bold">藏書</div>
             <NewBookButton />
           </div>
-          {/* <Divider className="my-1" /> */}
           <BookList bookList={bookList} />
         </div>
       </div>
