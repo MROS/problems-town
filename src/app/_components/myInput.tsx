@@ -25,7 +25,7 @@ export const ZodInput = function ({
   zodSchema,
   ...props
 }: MyInputProps & AdditionalProps) {
-  // 欄位選填，輸入空字串。這是合法的
+  // 在選填欄位輸入空字串，合法。
   if (!props.isRequired && props.value?.length == 0) {
     return <MyInput {...props} isInvalid={false} errorMessage={undefined} />;
   }

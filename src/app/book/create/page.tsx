@@ -39,8 +39,8 @@ export default function NewBook() {
   const createBook = api.book.create.useMutation();
 
   const submit = async () => {
-    try {
-      await createBook.mutateAsync({
+    createBook.mutate(
+      {
         date: publishedDate.length == 0 ? null : publishedDate,
         name: bookName,
         form: bookForm,
@@ -48,11 +48,9 @@ export default function NewBook() {
         translators: bookTranslators,
         ISBN: bookISBN,
         TOCTree: bookContents,
-      });
-    } catch (error) {
-      // TODO: 解析錯誤並反映到 UI
-      console.error(error);
-    }
+      },
+      {},
+    );
   };
 
   return (
@@ -168,10 +166,17 @@ export default function NewBook() {
             setBookContents={setBookContents}
           />
           <Divider className="mb-4" />
-          <div className="mb-8 flex justify-end">
-            <Button color="primary" onPress={submit}>
-              新增書籍
-            </Button>
+          <div className="mb-8 text-small">
+            <div className="flex justify-end">
+              <Button color="primary" onPress={submit}>
+                新增書籍
+              </Button>
+            </div>
+            <div className="flex justify-end text-red-600">
+              {createBook.error && (
+                <p>請修正錯誤後再試一次！{createBook.error.message}</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
