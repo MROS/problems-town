@@ -6,11 +6,7 @@ generator client {
 }
 
 datasource db {
-    provider = "sqlite"
-    // NOTE: When using mysql or sqlserver, uncomment the @db.Text annotations in model Account below
-    // Further reading:
-    // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
-    // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
+    provider = "postgres"
     url      = env("DATABASE_URL")
 }
 
@@ -42,10 +38,10 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
+    id   String  @id @default(cuid())
+    name String?
 
-    email         String   @unique
+    email         String    @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
@@ -58,4 +54,28 @@ model VerificationToken {
     expires    DateTime
 
     @@unique([identifier, token])
+}
+
+model Book {
+    id           String    @id @default(cuid())
+    name         String
+    ISBN         String    @unique
+    authors      String[]
+    isTranslated Boolean
+    translators  String[]
+    date         DateTime?
+
+    chapters Chapter[]
+}
+
+// Chapter 可指涉章、節、小節......等等目錄樹下任意深度節點
+model Chapter {
+    id             String    @id @default(cuid())
+    name           String
+    exerciseNumber Int       @default(0)
+    bookId         String
+    book           Book      @relation(fields: [bookId], references: [id])
+    parentId       String?
+    parent         Chapter?  @relation("parent", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
+    children       Chapter[] @relation("parent")
 }

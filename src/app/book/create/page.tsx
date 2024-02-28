@@ -3,6 +3,7 @@ import {
   Button,
   Checkbox,
   Divider,
+  Link,
   Select,
   SelectItem,
 } from "@nextui-org/react";
@@ -19,6 +20,7 @@ import {
   dateSchema,
 } from "./zodSchema";
 import { api } from "~/trpc/react";
+import { useRouter } from "next/navigation";
 
 const BOOK_FORMS: { name: BookForm; disabled?: boolean }[] = [
   { name: "現代出版品" },
@@ -26,7 +28,10 @@ const BOOK_FORMS: { name: BookForm; disabled?: boolean }[] = [
   { name: "古籍", disabled: true },
 ];
 
+// TODO: 等到提交表單時再驗證 zod ，並解析 trcp 錯誤來設定 input 的錯誤訊息
 export default function NewBook() {
+  const router = useRouter();
+
   const [bookForm, setBookForm] = useState<BookForm>("現代出版品");
   const [bookName, setBookName] = useState("");
   const [bookAuthors, setBookAuthors] = useState([""]);
@@ -35,6 +40,8 @@ export default function NewBook() {
   const [bookISBN, setBookISBN] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
   const [bookContents, setBookContents] = useState<TreeNode[]>([]);
+
+  const [submitError, setSubmitError] = useState<JSX.Element>(<></>);
 
   const createBook = api.book.create.useMutation();
 
@@ -49,7 +56,23 @@ export default function NewBook() {
         ISBN: bookISBN,
         TOCTree: bookContents,
       },
-      {},
+      {
+        onError: (opts) => {
+          if (opts.data?.code == "CONFLICT") {
+            const href = `${window.location.origin}/book/isbn/${bookISBN}`;
+            setSubmitError(
+              <div>
+                <Link href={href}>{href}</Link>
+              </div>,
+            );
+          } else {
+            setSubmitError(<></>);
+          }
+        },
+        onSuccess: (id) => {
+          router.push(`/book/id/${id}`);
+        },
+      },
     );
   };
 
@@ -177,6 +200,7 @@ export default function NewBook() {
                 <p>請修正錯誤後再試一次！{createBook.error.message}</p>
               )}
             </div>
+            <div className="flex justify-end text-red-600">{submitError}</div>
           </div>
         </div>
       </div>
