@@ -8,7 +8,7 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
 import { MyInput } from "./_components/myInput";
@@ -27,12 +27,10 @@ export default function SetNameModal() {
   const [invalid, setInvalid] = useState(false);
   const [errorMessage, setErrorMessage] = useState<null | ERROR_MESSAGE>(null);
 
-  useEffect(() => {
-    if (invalid && name.length > 0) {
-      setInvalid(false);
-      setErrorMessage(null);
-    }
-  }, [invalid, name.length]);
+  if (invalid && name.length > 0) {
+    setInvalid(false);
+    setErrorMessage(null);
+  }
 
   if (status != "authenticated") {
     return <></>;
@@ -65,7 +63,6 @@ export default function SetNameModal() {
                 setErrorMessage(ERROR_MESSAGE.TOO_SHORT);
                 return;
               }
-
               updateName.mutate(
                 { name: name },
                 {
