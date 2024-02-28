@@ -1,18 +1,12 @@
-import { z } from "zod";
+import { newBookSchema } from "~/app/book/create/zodSchema";
 
 import { createTRPCRouter, authenticatedProcedure } from "~/server/api/trpc";
 
 export const bookRouter = createTRPCRouter({
   create: authenticatedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(newBookSchema)
     .mutation(async ({ ctx, input }) => {
-      return ctx.db.user.update({
-        where: {
-          id: ctx.session.user.id,
-        },
-        data: {
-          name: input.name,
-        },
-      });
+      console.log(JSON.stringify(input, null, 2));
+      return;
     }),
 });

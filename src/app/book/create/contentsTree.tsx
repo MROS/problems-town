@@ -1,3 +1,4 @@
+"use client";
 import {
   Tree,
   getBackendOptions,
@@ -18,10 +19,7 @@ import { DndProvider } from "react-dnd";
 import { FaPen, FaAngleRight, FaAngleDown } from "react-icons/fa6";
 import React, { useState } from "react";
 import { MyInput } from "~/app/_components/myInput";
-
-export type NodeData = {
-  exerciseNumber: number;
-};
+import { type NodeData } from "./zodSchema";
 
 export type TreeNode = NodeModel<NodeData>;
 
@@ -53,7 +51,6 @@ export function ContentsTree(props: {
           data,
         };
       }
-
       return node;
     });
 

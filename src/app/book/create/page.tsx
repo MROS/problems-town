@@ -8,15 +8,17 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 import { FaCircleInfo } from "react-icons/fa6";
-import { ArrayInput, MyInput, ZodInput } from "~/app/_components/myInput";
+import { ArrayInput, ZodInput } from "~/app/_components/myInput";
 import { ImportContents } from "./importContentsModal";
 import { ContentsTree, type TreeNode } from "./contentsTree";
-import { z } from "~/utils/chineseZod";
-
-export const ALL_BOOK_FORMS = ["現代出版品", "電子書", "古籍"] as const;
-
-// export type BookForm = "現代出版品" | "電子書" | "古籍";
-export type BookForm = (typeof ALL_BOOK_FORMS)[number];
+import {
+  type BookForm,
+  writerSchema,
+  ISBNSchema,
+  bookNameSchema,
+  dateSchema,
+} from "./zodSchema";
+import { api } from "~/trpc/react";
 
 const BOOK_FORMS: { name: BookForm; disabled?: boolean }[] = [
   { name: "現代出版品" },
@@ -24,18 +26,34 @@ const BOOK_FORMS: { name: BookForm; disabled?: boolean }[] = [
   { name: "古籍", disabled: true },
 ];
 
-const bookNameSchema = z.string().min(1).max(256);
-const bookAuthorSchema = z.string().min(1).max(128);
-const ISBNSchema = z.string().length(13);
-
 export default function NewBook() {
-  const [bookForm, setBookForm] = useState("現代出版品");
+  const [bookForm, setBookForm] = useState<BookForm>("現代出版品");
   const [bookName, setBookName] = useState("");
   const [bookAuthors, setBookAuthors] = useState([""]);
   const [isTranslated, setIsTranslated] = useState(false);
   const [bookTranslators, setBookTranslators] = useState<null | string[]>(null);
   const [bookISBN, setBookISBN] = useState("");
+  const [publishedDate, setPublishedDate] = useState("");
   const [bookContents, setBookContents] = useState<TreeNode[]>([]);
+
+  const createBook = api.book.create.useMutation();
+
+  const submit = async () => {
+    try {
+      await createBook.mutateAsync({
+        date: publishedDate.length == 0 ? null : publishedDate,
+        name: bookName,
+        form: bookForm,
+        authors: bookAuthors,
+        translators: bookTranslators,
+        ISBN: bookISBN,
+        TOCTree: bookContents,
+      });
+    } catch (error) {
+      // TODO: 解析錯誤並反映到 UI
+      console.error(error);
+    }
+  };
 
   return (
     <main className="flex grow flex-col">
@@ -51,7 +69,7 @@ export default function NewBook() {
               placeholder="現代出版品"
               labelPlacement="outside"
               selectedKeys={[bookForm]}
-              onChange={(e) => setBookForm(e.target.value)}
+              onChange={(e) => setBookForm(e.target.value as BookForm)}
               disabledKeys={BOOK_FORMS.filter(
                 (bookForm) => bookForm.disabled,
               ).map((bookForm) => bookForm.name)}
@@ -75,7 +93,7 @@ export default function NewBook() {
               label="書名"
             />
             <ArrayInput
-              zodSchema={bookAuthorSchema}
+              zodSchema={writerSchema}
               values={bookAuthors}
               onValuesChange={setBookAuthors}
               addText="新增另一位作者"
@@ -102,7 +120,7 @@ export default function NewBook() {
               {isTranslated && bookTranslators ? (
                 <div className="ml-6 mt-2">
                   <ArrayInput
-                    zodSchema={bookAuthorSchema}
+                    zodSchema={writerSchema}
                     values={bookTranslators}
                     onValuesChange={setBookTranslators}
                     addText="新增另一位譯者"
@@ -125,7 +143,10 @@ export default function NewBook() {
               placeholder="9789573229322"
               label="ISBN"
             />
-            <MyInput
+            <ZodInput
+              zodSchema={dateSchema}
+              value={publishedDate}
+              onValueChange={setPublishedDate}
               labelPlacement="outside"
               placeholder="1996-12-16"
               label="出版日期（選填）"
@@ -148,7 +169,9 @@ export default function NewBook() {
           />
           <Divider className="mb-4" />
           <div className="mb-8 flex justify-end">
-            <Button color="primary">新增書籍</Button>
+            <Button color="primary" onPress={submit}>
+              新增書籍
+            </Button>
           </div>
         </div>
       </div>

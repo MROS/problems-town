@@ -14,7 +14,7 @@ const translation = {
     invalid_enum_value: "無效的 '{{received}}' 值，請輸入 {{- options}}",
     invalid_arguments: "參數錯誤",
     invalid_return_type: "錯誤的回傳值類型",
-    invalid_date: "錯誤的日期",
+    invalid_date: "日期格式錯誤",
     custom: "格式錯誤",
     invalid_intersection_types: "交集類型無法合併",
     not_multiple_of: "必須是 {{multipleOf}} 的倍數",

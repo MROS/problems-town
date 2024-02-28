@@ -25,17 +25,17 @@ export const ZodInput = function ({
   zodSchema,
   ...props
 }: MyInputProps & AdditionalProps) {
+  // 欄位選填，輸入空字串。這是合法的
+  if (!props.isRequired && props.value?.length == 0) {
+    return <MyInput {...props} isInvalid={false} errorMessage={undefined} />;
+  }
+
   const result = zodSchema.safeParse(props.value);
   if (!result.success) {
-    return (
-      <MyInput
-        isInvalid={true}
-        errorMessage={result.error.format()._errors}
-        {...props}
-      />
-    );
+    const firstError = result.error.format()._errors[0];
+    return <MyInput isInvalid={true} errorMessage={firstError} {...props} />;
   }
-  return <MyInput {...props} />;
+  return <MyInput {...props} isInvalid={false} errorMessage={undefined} />;
 };
 
 const OptionalZodInput = function ({
