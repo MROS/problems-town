@@ -2,6 +2,10 @@ import { db } from "~/server/db";
 import NewBookButton from "./newBookButton";
 import BookList from "./bookList";
 
+export const metadata = {
+  title: "藏書 | 做題小鎮",
+};
+
 export default async function Book() {
   const bookList = await db.book.findMany({
     orderBy: {

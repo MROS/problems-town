@@ -1,11 +1,29 @@
 import { lightFormat } from "date-fns";
 import { notFound } from "next/navigation";
 import { db } from "~/server/db";
+import { cache } from "react";
+import { type Metadata } from "next";
 
-export default async function BookById({ params }: { params: { id: string } }) {
-  const book = await db.book.findUnique({
-    where: { id: parseInt(params.id) },
+const getBook = cache(async (id: string) => {
+  return await db.book.findUnique({
+    where: { id: parseInt(id) },
   });
+});
+
+type Props = {
+  params: { id: string };
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const book = await getBook(params.id);
+
+  return {
+    title: book ? book.name : "找不到這本書",
+  };
+}
+
+export default async function BookById({ params }: Props) {
+  const book = await getBook(params.id);
 
   if (book == null) {
     notFound();
