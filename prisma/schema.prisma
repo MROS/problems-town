@@ -57,13 +57,14 @@ model VerificationToken {
 }
 
 model Book {
-    id           String    @id @default(cuid())
+    id           Int       @id @default(autoincrement())
     name         String
     ISBN         String    @unique
     authors      String[]
     isTranslated Boolean
     translators  String[]
-    date         DateTime?
+    publishDate  DateTime? // 出版日期
+    createDate   DateTime  @default(now()) // 本條目在在資料庫創建的時間
 
     chapters Chapter[]
 }
@@ -73,7 +74,7 @@ model Chapter {
     id             String    @id @default(cuid())
     name           String
     exerciseNumber Int       @default(0)
-    bookId         String
+    bookId         Int
     book           Book      @relation(fields: [bookId], references: [id])
     parentId       String?
     parent         Chapter?  @relation("parent", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉

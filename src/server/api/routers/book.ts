@@ -18,7 +18,7 @@ export const bookRouter = createTRPCRouter({
             authors: input.authors,
             isTranslated: input.translators != null,
             translators: input.translators ?? [],
-            date: input.date,
+            publishDate: input.date,
           },
         });
         return createBookResult.id;
