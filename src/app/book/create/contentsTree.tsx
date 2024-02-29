@@ -139,7 +139,7 @@ const CustomNode: React.FC<Props> = (props) => {
           <span className="ml-[16px]">{props.node.text}</span>
         )}
         {parseInt(initialExerciseNumber) > 0 && (
-          <Chip className="ml-2" size="sm">
+          <Chip color="primary" className="ml-2" size="sm">
             {initialExerciseNumber} 道習題
           </Chip>
         )}

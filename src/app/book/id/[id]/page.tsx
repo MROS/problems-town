@@ -1,33 +1,27 @@
 import { lightFormat } from "date-fns";
 import { notFound } from "next/navigation";
-import { db } from "~/server/db";
-import { cache } from "react";
 import { type Metadata } from "next";
-
-const getBook = cache(async (id: string) => {
-  return await db.book.findUnique({
-    where: { id: parseInt(id) },
-  });
-});
+import { getBookAndChapterNodes, queryBookById } from "./queryBook";
+import { ChapterTreeChildren } from "./chapterTree";
 
 type Props = {
   params: { id: string };
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const book = await getBook(params.id);
-
+  const book = await queryBookById(params.id);
   return {
     title: book ? book.name : "找不到這本書",
   };
 }
 
 export default async function BookById({ params }: Props) {
-  const book = await getBook(params.id);
-
-  if (book == null) {
+  const data = await getBookAndChapterNodes(params.id);
+  if (data == null) {
     notFound();
   }
+  const { book, root } = data;
+  console.log(JSON.stringify(root, null, 2));
 
   return (
     <main className="flex w-screen grow flex-col items-center pt-10 ">
@@ -75,6 +69,10 @@ export default async function BookById({ params }: Props) {
             ) : (
               <></>
             )}
+          </div>
+          <div className="mt-4">
+            <h2 className="mb-1 text-lg font-bold text-primary-500">目錄</h2>
+            <ChapterTreeChildren childrenNodes={root.children} />
           </div>
         </div>
       </div>
