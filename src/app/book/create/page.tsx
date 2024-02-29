@@ -18,6 +18,7 @@ import {
   ISBNSchema,
   bookNameSchema,
   dateSchema,
+  pageNumberSchema,
 } from "./zodSchema";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
@@ -37,7 +38,9 @@ export default function NewBook() {
   const [bookAuthors, setBookAuthors] = useState([""]);
   const [isTranslated, setIsTranslated] = useState(false);
   const [bookTranslators, setBookTranslators] = useState<null | string[]>(null);
+  const [originalName, setOriginalName] = useState<null | string>(null);
   const [bookISBN, setBookISBN] = useState("");
+  const [bookPageNumber, setBookPageNumber] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
   const [bookContents, setBookContents] = useState<TreeNode[]>([]);
 
@@ -53,6 +56,8 @@ export default function NewBook() {
         form: bookForm,
         authors: bookAuthors,
         translators: bookTranslators,
+        originalName: originalName,
+        pageNumber: bookPageNumber.length == 0 ? null : bookPageNumber,
         ISBN: bookISBN,
         TOCTree: bookContents,
       },
@@ -131,26 +136,39 @@ export default function NewBook() {
                   setIsTranslated(value);
                   if (value == false) {
                     setBookTranslators(null);
+                    setOriginalName(null);
                   } else {
                     setBookTranslators([""]);
+                    setOriginalName("");
                   }
                 }}
               >
                 本書爲翻譯書籍？
               </Checkbox>
-              {isTranslated && bookTranslators ? (
-                <div className="ml-6 mt-2">
-                  <ArrayInput
-                    zodSchema={writerSchema}
-                    values={bookTranslators}
-                    onValuesChange={setBookTranslators}
-                    addText="新增另一位譯者"
-                    isRequired
-                    placeholder="請輸入譯者名字"
-                    labelPlacement="outside"
-                    label="譯者"
-                  />
-                </div>
+              {isTranslated && bookTranslators && originalName != null ? (
+                <>
+                  <div className="ml-6 mt-2 space-y-10">
+                    <ZodInput
+                      zodSchema={bookNameSchema}
+                      value={originalName}
+                      onValueChange={setOriginalName}
+                      isRequired
+                      labelPlacement="outside"
+                      placeholder="請輸入原作名"
+                      label="原作名"
+                    />
+                    <ArrayInput
+                      zodSchema={writerSchema}
+                      values={bookTranslators}
+                      onValuesChange={setBookTranslators}
+                      addText="新增另一位譯者"
+                      isRequired
+                      placeholder="請輸入譯者名字"
+                      labelPlacement="outside"
+                      label="譯者"
+                    />
+                  </div>
+                </>
               ) : (
                 <></>
               )}
@@ -171,6 +189,14 @@ export default function NewBook() {
               labelPlacement="outside"
               placeholder="1996-12-16"
               label="出版日期（選填）"
+            />
+            <ZodInput
+              zodSchema={pageNumberSchema}
+              value={bookPageNumber}
+              onValueChange={setBookPageNumber}
+              labelPlacement="outside"
+              placeholder="432"
+              label="頁數（選填）"
             />
             <Divider />
           </div>

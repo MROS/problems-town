@@ -18,7 +18,9 @@ export const bookRouter = createTRPCRouter({
             authors: input.authors,
             isTranslated: input.translators != null,
             translators: input.translators ?? [],
+            originalName: input.originalName,
             publishDate: input.date,
+            pageNumber: input.pageNumber,
           },
         });
         return createBookResult.id;

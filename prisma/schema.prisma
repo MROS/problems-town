@@ -59,10 +59,12 @@ model VerificationToken {
 model Book {
     id           Int       @id @default(autoincrement())
     name         String
-    ISBN         String?   @unique
     authors      String[]
     isTranslated Boolean
+    originalName String?
     translators  String[]
+    ISBN         String?   @unique
+    pageNumber   Int?
     publishDate  DateTime? // 出版日期
     createDate   DateTime  @default(now()) // 本條目在在資料庫創建的時間
 

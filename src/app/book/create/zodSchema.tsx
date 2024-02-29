@@ -21,11 +21,10 @@ export const ISBNSchema = z
   .regex(/^[0-9]{13}$/, "ISBN 由數字組成"); // TODO: 精確的 ISBN 正則表達式
 export const dateSchema = z
   .string()
-  .transform((value, ctx) => {
+  .transform((value, context) => {
     const date = new Date(value);
     if (Number.isNaN(date.getTime())) {
-      console.log(value);
-      ctx.addIssue({
+      context.addIssue({
         code: z.ZodIssueCode.custom,
         message: "錯誤的日期格式",
       });
@@ -33,6 +32,20 @@ export const dateSchema = z
     return date;
   })
   .pipe(z.date().max(new Date(), "出版時間不可以比「現在」晚"));
+
+export const pageNumberSchema = z
+  .string()
+  .transform((value, context) => {
+    const n = parseInt(value);
+    if (Number.isNaN(n)) {
+      context.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "無法解析爲整數",
+      });
+    }
+    return n;
+  })
+  .pipe(z.number().min(1, "至少要有 1 頁"));
 
 // TODTree = table of contents tree = 目錄樹
 const TOCTreeNodeSchema = z.object({
@@ -47,7 +60,9 @@ export const newBookSchema = z.object({
   form: bookFormSchema,
   authors: writerSchema.array(),
   translators: writerSchema.array().nullable(),
+  originalName: bookNameSchema.nullable(),
   ISBN: ISBNSchema,
+  pageNumber: pageNumberSchema.nullable(),
   date: dateSchema.nullable(),
   TOCTree: TOCTreeNodeSchema.array(),
 });

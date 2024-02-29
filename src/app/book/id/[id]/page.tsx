@@ -40,9 +40,23 @@ export default async function BookById({ params }: Props) {
               {book.authors.join(" / ")}
             </div>
             {book.isTranslated ? (
+              <>
+                <div>
+                  <span className="text-gray-500">譯者：</span>
+                  {book.translators.join(" / ")}
+                </div>
+                <div>
+                  <span className="text-gray-500">原作名：</span>
+                  {book.originalName}
+                </div>
+              </>
+            ) : (
+              <></>
+            )}
+            {book.pageNumber ? (
               <div>
-                <span className="text-gray-500">譯者：</span>
-                {book.translators.join(" / ")}
+                <span className="text-gray-500">頁數：</span>
+                {book.pageNumber}
               </div>
             ) : (
               <></>
