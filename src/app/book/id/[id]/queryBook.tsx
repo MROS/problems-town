@@ -2,7 +2,10 @@ import { db } from "~/server/db";
 import { cache } from "react";
 import { type Chapter } from "@prisma/client";
 
-export type ChapterNode = Chapter & { children: ChapterNode[] };
+export type ChapterNode = Chapter & {
+  children: ChapterNode[];
+  parent: ChapterNode | null;
+};
 
 function rebuildChapterNodes(chapters: Chapter[]): {
   root: ChapterNode;
@@ -16,10 +19,10 @@ function rebuildChapterNodes(chapters: Chapter[]): {
     if (chapter.parentId == null && root != null) {
       throw new Error("複數個根節點");
     } else if (chapter.parentId == null && root == null) {
-      root = { ...chapter, children: [] };
+      root = { ...chapter, children: [], parent: null };
       nodes.set(chapter.id, root);
     } else {
-      nodes.set(chapter.id, { ...chapter, children: [] });
+      nodes.set(chapter.id, { ...chapter, children: [], parent: null });
     }
   });
   if (root == null) {
@@ -35,7 +38,9 @@ function rebuildChapterNodes(chapters: Chapter[]): {
     if (parent == undefined) {
       throw new Error("節點宣稱的父節點不存在");
     }
+    // NOTE: 親子互相引用，會導致 ChapterNode 無法輸出成 JSON
     parent.children.push(node);
+    node.parent = parent;
   });
 
   // 根據 indexInSameLevel 排序子節點

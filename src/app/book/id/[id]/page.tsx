@@ -21,7 +21,6 @@ export default async function BookById({ params }: Props) {
     notFound();
   }
   const { book, root } = data;
-  console.log(JSON.stringify(root, null, 2));
 
   return (
     <main className="flex w-screen grow flex-col items-center pt-10 ">

@@ -3,6 +3,7 @@ import { Chip, Link } from "@nextui-org/react";
 import { type ChapterNode } from "./queryBook";
 import { useState } from "react";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa6";
+import ChapterURL from "./[chapterId]/chapterURL";
 
 export function ChapterTreeChildren(props: { childrenNodes: ChapterNode[] }) {
   const children = props.childrenNodes;
@@ -42,7 +43,7 @@ function ChapterLine(props: {
         color="foreground"
         underline="hover"
         className="hover:cursor-pointer"
-        href={`/book/id/${node.bookId}/${node.id}`}
+        href={ChapterURL(node.bookId, node.id)}
       >
         {node.name}
       </Link>
