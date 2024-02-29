@@ -53,6 +53,12 @@ export default async function BookById({ params }: Props) {
             ) : (
               <></>
             )}
+            <div>
+              <span className="text-gray-500">出版時間：</span>
+              {book.publishDate
+                ? lightFormat(book.publishDate, "yyyy-MM-dd")
+                : "無資料"}
+            </div>
             {book.pageNumber ? (
               <div>
                 <span className="text-gray-500">頁數：</span>
@@ -61,12 +67,6 @@ export default async function BookById({ params }: Props) {
             ) : (
               <></>
             )}
-            <div>
-              <span className="text-gray-500">出版時間：</span>
-              {book.publishDate
-                ? lightFormat(book.publishDate, "yyyy-MM-dd")
-                : "無資料"}
-            </div>
             {book.ISBN ? (
               <div>
                 <span className="text-gray-500">ISBN：</span>

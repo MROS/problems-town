@@ -73,12 +73,16 @@ model Book {
 
 // Chapter 可指涉章、節、小節......等等目錄樹下任意深度節點
 model Chapter {
-    id             String    @id @default(cuid())
-    name           String
-    exerciseNumber Int       @default(0)
-    bookId         Int
-    book           Book      @relation(fields: [bookId], references: [id])
-    parentId       String?
-    parent         Chapter?  @relation("parent", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
-    children       Chapter[] @relation("parent")
+    id               String  @id @default(cuid())
+    isRoot           Boolean // 若爲真，此爲虛擬的根章節，其 name 欄位應等同於書名
+    indexInSameLevel Int
+    name             String
+    bookId           Int
+    book             Book    @relation(fields: [bookId], references: [id])
+
+    exerciseNumber Int @default(0)
+
+    parentId String?
+    parent   Chapter?  @relation("parentChildren", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
+    children Chapter[] @relation("parentChildren")
 }

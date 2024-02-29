@@ -55,6 +55,8 @@ const TOCTreeNodeSchema = z.object({
   data: NodeDataSchema.optional(),
 });
 
+export type TOCTreeNode = z.infer<typeof TOCTreeNodeSchema>;
+
 export const newBookSchema = z.object({
   name: bookNameSchema,
   form: bookFormSchema,
