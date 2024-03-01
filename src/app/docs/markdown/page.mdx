@@ -15,21 +15,22 @@ TODO: 撰寫更平易近人的解說，將編輯器放到本頁面供讀者直�
 2. \```math \{數學式\} ```
 
 
-### $$ 寫法
-<PlainCode text={blockFormula} />
-效果：
-<MyMarkdown>{blockFormula}</MyMarkdown>
-
 ### \```math ``` 寫法
 <PlainCode text={codeFormula} />
 效果：
 <MyMarkdown>{codeFormula}</MyMarkdown>
 
-{/* 
-TODO: 目前的 rehype-mathjax 不會產生行內數學式
-如果只用一個 $ ，會產生行內數學式，後續內容會跟它仍在同一行。
-```
-$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $
-``` */}
+### $$ 寫法
+<PlainCode text={blockFormula} />
+效果：
+<MyMarkdown>{blockFormula}</MyMarkdown>
+
+### $ 寫法
+
+除了區塊層級數學式，本站也支援行內數學式，如果只用一個 $ 來包夾，就會產生行內數學式，後續內容會跟它仍在同一行。
+<PlainCode text={inLineFormula} />
+效果：
+<MyMarkdown>{inLineFormula}</MyMarkdown>
+
 
 
