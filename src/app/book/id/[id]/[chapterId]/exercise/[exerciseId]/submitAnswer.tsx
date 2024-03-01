@@ -6,11 +6,7 @@ import {
   BsArrowsCollapseVertical,
   BsArrowsExpandVertical,
 } from "react-icons/bs";
-import Markdown from "react-markdown";
-import remarkBreaks from "remark-breaks";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeMathjax from "rehype-mathjax";
+import { MyMarkdown } from "~/app/_components/myMarkdown";
 
 function AnswerTextArea(props: {
   answer: string;
@@ -34,12 +30,7 @@ function Preview(props: { answer: string }) {
   return (
     <div className="markdown-body w-full overflow-auto text-wrap border-2 p-[8px]">
       {/* 加上 markdown-body 以啓用 ~/styles/github-markdow-light.css */}
-      <Markdown
-        remarkPlugins={[remarkGfm, remarkBreaks, remarkMath]}
-        rehypePlugins={[rehypeMathjax]}
-      >
-        {props.answer}
-      </Markdown>
+      <MyMarkdown>{props.answer}</MyMarkdown>
     </div>
   );
 }
@@ -90,7 +81,11 @@ function AnswerForm() {
         <Link size="sm" target="_blank" href="https://www.mathjax.org/">
           MathJax 數學式
         </Link>
-        （$$ 包夾） ，詳見本站文件。
+        （$$ 包夾） ，詳見
+        <Link size="sm" target="_blank" href="/docs/markdown">
+          本站 Markdown 語法說明
+        </Link>
+        。
       </span>
       <div className="flex flex-row justify-end pb-10">
         <Button color="primary">繳交</Button>

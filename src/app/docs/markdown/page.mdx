@@ -1,0 +1,35 @@
+import { MyMarkdown } from "~/app/_components/myMarkdown";
+import { codeFormula, inLineFormula, blockFormula, PlainCode } from "./formula"
+
+# Markdown 語法說明
+
+TODO: 撰寫更平易近人的解說，將編輯器放到本頁面供讀者直接把玩。
+
+本站所用的 Markdown 語法以 [github flavored markdown](https://github.github.com/gfm/) 爲根基，加上少許額外功能，列舉在此。
+
+## MathJax 數學式
+
+有兩種寫法，效果相同，都會產生區塊層級的數學式。
+
+1. 前後用 \$$ \{數學式\} $$ 包起來，
+2. \```math \{數學式\} ```
+
+
+### $$ 寫法
+<PlainCode text={blockFormula} />
+效果：
+<MyMarkdown>{blockFormula}</MyMarkdown>
+
+### \```math ``` 寫法
+<PlainCode text={codeFormula} />
+效果：
+<MyMarkdown>{codeFormula}</MyMarkdown>
+
+{/* 
+TODO: 目前的 rehype-mathjax 不會產生行內數學式
+如果只用一個 $ ，會產生行內數學式，後續內容會跟它仍在同一行。
+```
+$ x = {-b \pm \sqrt{b^2-4ac} \over 2a} $
+``` */}
+
+
