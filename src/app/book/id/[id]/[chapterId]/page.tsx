@@ -1,8 +1,9 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { getBookAndChapterNodes } from "../queryBook";
 import { ChapterTabs } from "./tabs";
-import { CheckValidChapterURL } from "./layout";
+import { getBookAndChapterNodes } from "../queryBook";
+
+import { CheckValidChapterURL } from "./checkValidChapterURL";
 
 type Props = {
   params: { id: string; chapterId: string };

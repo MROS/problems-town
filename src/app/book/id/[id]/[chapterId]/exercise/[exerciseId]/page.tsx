@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { type ChapterData, CheckValidChapterURL } from "../../layout";
+import { CheckValidChapterURL } from "~/app/book/id/[id]/[chapterId]/checkValidChapterURL";
+import { type ChapterData } from "~/app/book/id/[id]/[chapterId]/chapterURL";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
