@@ -4,6 +4,7 @@ import { type ChapterData, CheckValidChapterURL } from "../../layout";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
+import SubmitAnswer from "./submitAnswer";
 
 type Params = { id: string; chapterId: string; exerciseId: string };
 
@@ -35,7 +36,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await CheckValidExerciseURL(params);
   const { node, exerciseId } = data;
   return {
-    title: `習題 ${exerciseId} | ${node.name}`,
+    title: `${node.name} | 習題 ${exerciseId}`,
   };
 }
 
@@ -66,6 +67,9 @@ export default async function Exercise({ params }: Props) {
         </div>
         <div>
           <h3 className="font-bold">作答</h3>
+          <div className="mt-2">
+            <SubmitAnswer />
+          </div>
         </div>
       </div>
     </div>

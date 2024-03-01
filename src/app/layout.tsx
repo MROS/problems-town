@@ -1,4 +1,5 @@
 import "~/styles/globals.css";
+import "~/styles/github-markdown-light.css"; // TODO: 自己寫一份以縮小打包體積
 
 import { Inter } from "next/font/google";
 
