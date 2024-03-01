@@ -41,7 +41,7 @@ export default async function Layout({ params, children }: Props) {
   const { node, nodes, book } = data;
 
   return (
-    <main className="flex w-screen grow flex-col items-center pt-4 ">
+    <main className="flex w-full grow flex-col items-center pt-4 ">
       <div className="flex w-full max-w-xl flex-col px-2">
         <div className="flex flex-col justify-between">
           <div>
