@@ -1,3 +1,3 @@
-export default function bookURL(bookId: number) {
+export default function getBookURL(bookId: number) {
   return `/book/id/${bookId}`;
 }

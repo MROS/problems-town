@@ -61,7 +61,8 @@ export default function Navigation() {
           做題小鎮
         </Link>
       </NavbarBrand>
-      <NavbarContent className="hidden gap-4 sm:flex" justify="center">
+      <NavbarContent className="gap-4 sm:flex" justify="center">
+        {/* <NavbarContent className="hidden gap-4 sm:flex" justify="center"> */}
         <NavbarItem isActive={category == "club"}>
           <Link href="/club">讀書會</Link>
         </NavbarItem>

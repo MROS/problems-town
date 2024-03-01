@@ -1,6 +1,6 @@
 import { db } from "~/server/db";
 import { cache } from "react";
-import { type Chapter } from "@prisma/client";
+import { type Book, type Chapter } from "@prisma/client";
 
 export type ChapterNode = Chapter & {
   children: ChapterNode[];
@@ -59,11 +59,19 @@ export const queryBookById = cache(async (id: string) => {
   });
 });
 
-export const getBookAndChapterNodes = cache(async (id: string) => {
-  const book = await queryBookById(id);
-  if (book == null) {
-    return null;
-  }
-  const { root, nodes } = rebuildChapterNodes(book.chapters);
-  return { book, root, nodes };
-});
+export type BookData = {
+  book: Book;
+  root: ChapterNode;
+  nodes: Map<string, ChapterNode>;
+} | null;
+
+export const getBookAndChapterNodes = cache(
+  async (id: string): Promise<BookData> => {
+    const book = await queryBookById(id);
+    if (book == null) {
+      return null;
+    }
+    const { root, nodes } = rebuildChapterNodes(book.chapters);
+    return { book, root, nodes };
+  },
+);

@@ -1,10 +1,10 @@
 "use client";
 import { BreadcrumbItem, Breadcrumbs } from "@nextui-org/react";
 import { type ChapterNode } from "../queryBook";
-import ChapterURL from "./chapterURL";
+import getChapterURL from "./chapterURL";
 import Link from "next/link";
 import { FaBookOpen } from "react-icons/fa6";
-import bookURL from "../bookURL";
+import getBookURL from "../bookURL";
 
 export function PathToRoot(props: {
   node: ChapterNode;
@@ -23,7 +23,7 @@ export function PathToRoot(props: {
   return (
     <Breadcrumbs>
       <BreadcrumbItem>
-        <Link className="hover:underline" href={bookURL(node.bookId)}>
+        <Link className="hover:underline" href={getBookURL(node.bookId)}>
           <FaBookOpen />
         </Link>
       </BreadcrumbItem>
@@ -32,7 +32,7 @@ export function PathToRoot(props: {
           <BreadcrumbItem key={node.id}>
             <Link
               className="hover:underline"
-              href={ChapterURL(node.bookId, node.id)}
+              href={getChapterURL(node.bookId, node.id)}
             >
               {node.name}
             </Link>
