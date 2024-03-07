@@ -7,27 +7,30 @@ TODO: 撰寫更平易近人的解說，將編輯器放到本頁面供讀者直�
 
 本站所用的 Markdown 語法以 [github flavored markdown](https://github.github.com/gfm/) 爲根基，加上少許額外功能，列舉在此。
 
-## MathJax 數學式
+## Katex 數學式
 
-有兩種寫法，效果相同，都會產生區塊層級的數學式。
+數學式分成區塊層級與行內數學式兩種。
 
-1. 前後用 \$$ \{數學式\} $$ 包起來，
-2. \```math \{數學式\} ```
+### 區塊層級數學式
 
+將數學式視爲完整區塊，單獨置中。可用 \```math ``` 及 $$ 兩種寫法，此兩種寫法效果等價。
 
-### \```math ``` 寫法
+#### \```math ``` 寫法
 <PlainCode text={codeFormula} />
 效果：
 <MyMarkdown>{codeFormula}</MyMarkdown>
 
-### $$ 寫法
+#### $$ 寫法
 <PlainCode text={blockFormula} />
 效果：
 <MyMarkdown>{blockFormula}</MyMarkdown>
 
-### $ 寫法
+### 行內數學式
 
-除了區塊層級數學式，本站也支援行內數學式，如果只用一個 $ 來包夾，就會產生行內數學式，後續內容會跟它仍在同一行。
+除了區塊層級數學式，本站也支援行內數學式，如果只用一個 $ 來包夾，就會產生行內數學式，它的前後文跟它仍在同一行。
+
+#### $ 寫法
+
 <PlainCode text={inLineFormula} />
 效果：
 <MyMarkdown>{inLineFormula}</MyMarkdown>
