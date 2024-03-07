@@ -1,11 +1,13 @@
 import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { CheckValidChapterURL } from "~/app/book/id/[id]/[chapterId]/checkValidChapterURL";
+import { getChapterData } from "~/app/book/id/[id]/[chapterId]/chapterData";
 import { type ChapterData } from "~/app/book/id/[id]/[chapterId]/chapterURL";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
 import SubmitAnswer from "./submitAnswer";
+import { type Exercise } from "@prisma/client";
+import { db } from "~/server/db";
 
 type Params = { id: string; chapterId: string; exerciseId: string };
 
@@ -14,36 +16,31 @@ type Props = {
 };
 
 type ExerrciseData = ChapterData & {
-  exerciseId: number;
+  exercise: Exercise;
 };
 
-export async function CheckValidExerciseURL(
-  params: Params,
-): Promise<ExerrciseData> {
-  const data = await CheckValidChapterURL(params);
-  const { node } = data;
-  const exerciseId = parseInt(params.exerciseId);
-  if (
-    Number.isNaN(exerciseId) ||
-    exerciseId < 1 ||
-    exerciseId > node.exerciseNumber
-  ) {
+export async function getExerciseData(params: Params): Promise<ExerrciseData> {
+  const data = await getChapterData(params);
+  const exercise = await db.exercise.findUnique({
+    where: { id: params.exerciseId },
+  });
+  if (exercise == null) {
     notFound();
   }
-  return { ...data, exerciseId };
+  return { ...data, exercise };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = await CheckValidExerciseURL(params);
-  const { node, exerciseId } = data;
+  const data = await getExerciseData(params);
+  const { node, exercise } = data;
   return {
-    title: `${node.name} | 習題 ${exerciseId}`,
+    title: `${node.name} | ${exercise.name}`,
   };
 }
 
 export default async function Exercise({ params }: Props) {
-  const data = await CheckValidExerciseURL(params);
-  const { node } = data;
+  const data = await getExerciseData(params);
+  const { node, exercise } = data;
   const exerciseURL = getExerciseURL(node.bookId, node.id, params.exerciseId);
 
   return (
@@ -51,7 +48,7 @@ export default async function Exercise({ params }: Props) {
       <div className="flex flex-row justify-between">
         <h2 className="text-lg font-bold">
           <Link color="foreground" href={exerciseURL}>
-            習題 {data.exerciseId}
+            {exercise.name}
           </Link>
         </h2>
         {/* TODO: 顯示解答數量 */}

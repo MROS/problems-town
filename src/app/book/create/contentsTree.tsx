@@ -113,14 +113,16 @@ const CustomNode: React.FC<Props> = (props) => {
   // modal 狀態
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [text, setText] = useState(props.node.text);
-  const initialExerciseNumber =
-    props.node.data?.exerciseNumber.toString() ?? "0";
-  const [exerciseNumber, setExerciseNumber] = useState(initialExerciseNumber);
+  const initialBuiltInExerciseNumber =
+    props.node.data?.builtInExerciseNumber.toString() ?? "0";
+  const [builtInExerciseNumber, setBuiltInExerciseNumber] = useState(
+    initialBuiltInExerciseNumber,
+  );
   const [invalidNumber, setInvalidNumber] = useState(false);
 
   React.useEffect(() => {
-    setExerciseNumber(initialExerciseNumber);
-  }, [initialExerciseNumber]);
+    setBuiltInExerciseNumber(initialBuiltInExerciseNumber);
+  }, [initialBuiltInExerciseNumber]);
 
   return (
     <div
@@ -138,9 +140,9 @@ const CustomNode: React.FC<Props> = (props) => {
         ) : (
           <span className="ml-[16px]">{props.node.text}</span>
         )}
-        {parseInt(initialExerciseNumber) > 0 && (
+        {parseInt(initialBuiltInExerciseNumber) > 0 && (
           <Chip color="primary" className="ml-2" size="sm">
-            {initialExerciseNumber} 道習題
+            {initialBuiltInExerciseNumber} 道習題
           </Chip>
         )}
         <FaPen
@@ -165,21 +167,21 @@ const CustomNode: React.FC<Props> = (props) => {
                 <MyInput
                   type="number"
                   label="習題數量"
-                  value={exerciseNumber}
+                  value={builtInExerciseNumber}
                   onValueChange={(value) => {
                     setInvalidNumber(false);
-                    setExerciseNumber(value);
+                    setBuiltInExerciseNumber(value);
                   }}
                   isInvalid={invalidNumber}
                   errorMessage={invalidNumber ? "習題數量必須是是正整數" : ""}
-                  placeholder={initialExerciseNumber}
+                  placeholder={initialBuiltInExerciseNumber}
                 />
               </ModalBody>
               <ModalFooter>
                 <Button
                   onPress={() => {
                     setText(props.node.text);
-                    setExerciseNumber(initialExerciseNumber);
+                    setBuiltInExerciseNumber(initialBuiltInExerciseNumber);
                     setInvalidNumber(false);
                     onClose();
                   }}
@@ -189,14 +191,14 @@ const CustomNode: React.FC<Props> = (props) => {
                 <Button
                   color="primary"
                   onPress={() => {
-                    const n = parseInt(exerciseNumber);
+                    const n = parseInt(builtInExerciseNumber);
                     if (!Number.isInteger(n) || n < 0) {
                       setInvalidNumber(true);
                       return;
                     }
                     setInvalidNumber(false);
                     props.handleNodeModify(props.node.id, text, {
-                      exerciseNumber: n,
+                      builtInExerciseNumber: n,
                     });
                     onClose();
                   }}

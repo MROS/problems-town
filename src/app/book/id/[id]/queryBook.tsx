@@ -7,6 +7,8 @@ export type ChapterNode = Chapter & {
   parent: ChapterNode | null;
 };
 
+// TODO: 處理 chapters 爲空陣列的情形
+// 應返回 root == null
 function rebuildChapterNodes(chapters: Chapter[]): {
   root: ChapterNode;
   nodes: Map<string, ChapterNode>;

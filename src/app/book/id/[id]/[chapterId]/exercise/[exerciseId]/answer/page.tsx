@@ -1,5 +1,5 @@
 import { Button } from "@nextui-org/react";
-import { CheckValidExerciseURL } from "../page";
+import { getExerciseData } from "../page";
 import getExerciseURL from "../exerciseURL";
 import Link from "next/link";
 
@@ -10,7 +10,7 @@ type Props = {
 };
 
 export default async function Exercise({ params }: Props) {
-  const data = await CheckValidExerciseURL(params);
+  const data = await getExerciseData(params);
   const { node } = data;
   const exerciseURL = getExerciseURL(node.bookId, node.id, params.exerciseId);
 

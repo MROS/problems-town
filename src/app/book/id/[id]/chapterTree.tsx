@@ -47,9 +47,9 @@ function ChapterLine(props: {
       >
         {node.name}
       </Link>
-      {node.exerciseNumber > 0 && (
+      {node.builtInExerciseNumber > 0 && (
         <Chip color="primary" className="ml-2" size="sm">
-          {node.exerciseNumber} 道習題
+          {node.builtInExerciseNumber} 道習題
         </Chip>
       )}
     </div>

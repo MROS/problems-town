@@ -15,7 +15,7 @@ export default async function Book() {
   return (
     <main className="flex grow flex-col ">
       <div className="flex w-screen flex-col items-center pt-10">
-        <div className="flex w-full max-w-xl flex-col px-2">
+        <div className="flex w-full max-w-2xl flex-col px-2">
           <div className="mb-3 flex flex-row items-end justify-between">
             <div className="font-bold">藏書</div>
             <NewBookButton />

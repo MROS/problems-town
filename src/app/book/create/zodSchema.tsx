@@ -1,7 +1,7 @@
 import { z } from "~/utils/chineseZod";
 
 // 目錄樹 (react dnd treeview) 的 data 型別
-export const NodeDataSchema = z.object({ exerciseNumber: z.number() });
+export const NodeDataSchema = z.object({ builtInExerciseNumber: z.number() });
 export type NodeData = z.infer<typeof NodeDataSchema>;
 
 const bookFormSchema = z.union([

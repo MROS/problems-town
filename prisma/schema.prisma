@@ -41,11 +41,13 @@ model User {
     id   String  @id @default(cuid())
     name String?
 
-    email         String    @unique
+    email         String     @unique
     emailVerified DateTime?
     image         String?
     accounts      Account[]
     sessions      Session[]
+    answers       Answer[]
+    exercises     Exercise[]
 }
 
 model VerificationToken {
@@ -80,9 +82,50 @@ model Chapter {
     bookId           Int
     book             Book    @relation(fields: [bookId], references: [id])
 
-    exerciseNumber Int @default(0)
+    // TODO: 改爲 JSON 以應付不同的 builtInType
+    builtInExerciseNumber Int @default(0)
 
-    parentId String?
-    parent   Chapter?  @relation("parentChildren", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
-    children Chapter[] @relation("parentChildren")
+    parentId  String?
+    parent    Chapter?   @relation("parentChildren", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
+    children  Chapter[]  @relation("parentChildren")
+    exercises Exercise[]
+}
+
+enum ExerciseType {
+    BUILT_IN // 課本內建
+    ORIGINAL // 鎮友原創
+}
+
+model Exercise {
+    id           String       @id @default(cuid())
+    type         ExerciseType @default(BUILT_IN)
+    name         String
+    chapterId    String
+    chapter      Chapter      @relation(fields: [chapterId], references: [id])
+    description  String?
+    builtInOrder Int? // 若爲內建習題，該欄位代表習題編號，若爲原創習題，該欄位爲空
+    builtInType  String? // 當一章中多種類型的習題，如分成計算題、證明題、申論題，用此欄位區分。
+    createDate   DateTime     @default(now())
+
+    authorId String?
+    author   User?   @relation(fields: [authorId], references: [id])
+
+    answers Answer[]
+}
+
+enum TextFormat {
+    MARKDOWN
+}
+
+model Answer {
+    id         Int        @id @default(autoincrement())
+    name       String
+    format     TextFormat @default(MARKDOWN)
+    text       String // 答案內容
+    createDate DateTime   @default(now())
+
+    exerciseId String
+    exercise   Exercise @relation(fields: [exerciseId], references: [id])
+    authorId   String
+    author     User     @relation(fields: [authorId], references: [id])
 }

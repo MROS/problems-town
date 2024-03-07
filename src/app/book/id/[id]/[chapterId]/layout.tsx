@@ -4,7 +4,7 @@ import { PathToRoot } from "./breadcrumbs";
 import Link from "next/link";
 import getBookURL from "../bookURL";
 import getChapterURL from "./chapterURL";
-import { CheckValidChapterURL } from "./checkValidChapterURL";
+import { getChapterData } from "./chapterData";
 
 type Params = { id: string; chapterId: string };
 
@@ -15,7 +15,7 @@ type Props = {
 
 // TODO: 桌面版側邊欄顯示所有章節
 export default async function Layout({ params, children }: Props) {
-  const data = await CheckValidChapterURL(params);
+  const data = await getChapterData(params);
   const { node, nodes, book } = data;
 
   return (

@@ -1,18 +1,42 @@
-import { type Book, Prisma, type PrismaClient } from "@prisma/client";
+import {
+  type Book,
+  Prisma,
+  type PrismaClient,
+  type ExerciseType,
+} from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import assert from "assert";
 import { type TOCTreeNode, newBookSchema } from "~/app/book/create/zodSchema";
 
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
+type ExerciseData = {
+  name: string;
+  type: ExerciseType;
+  builtInOrder: number;
+};
+
 type ChapterData = {
   isRoot: boolean;
   indexInSameLevel: number;
   name: string;
-  exerciseNumber?: number;
+  builtInExerciseNumber?: number;
   bookId: number;
   children: { create: ChapterData[] };
+  exercises: { create: ExerciseData[] };
 };
+
+function generateBuiltInExercises(exerciseNumber: number): ExerciseData[] {
+  const exercises: ExerciseData[] = [];
+  for (let i = 1; i <= exerciseNumber; i += 1) {
+    exercises.push({
+      name: `習題 ${i}`, // TODO: 根據 Exercise.builtInType 來調整習題名字
+      type: "BUILT_IN",
+      builtInOrder: i,
+    });
+  }
+  return exercises;
+}
 
 async function storeTOC(toc: TOCTreeNode[], book: Book, db: PrismaClient) {
   // 1. 將 TreeNode[] 整理成 prisma nested write 所需的格式
@@ -21,19 +45,28 @@ async function storeTOC(toc: TOCTreeNode[], book: Book, db: PrismaClient) {
     isRoot: true,
     indexInSameLevel: 0,
     name: book.name,
-    exerciseNumber: 0,
+    builtInExerciseNumber: 0,
     bookId: book.id,
+    exercises: { create: [] },
     children: { create: [] },
   };
   nodes.set(0, root);
   // 初始化所有節點
   toc.forEach((node) => {
+    const builtInExerciseNumber = node.data?.builtInExerciseNumber;
+    const exercises =
+      builtInExerciseNumber == null
+        ? []
+        : generateBuiltInExercises(builtInExerciseNumber);
     nodes.set(node.id, {
       isRoot: false,
       indexInSameLevel: -1, // 此時還不知道自己在同階層的位置
       name: node.text,
-      exerciseNumber: node.data?.exerciseNumber,
+      builtInExerciseNumber,
       bookId: book.id,
+      exercises: {
+        create: exercises,
+      },
       children: { create: [] },
     });
   });
