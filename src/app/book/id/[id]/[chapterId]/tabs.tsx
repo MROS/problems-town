@@ -3,7 +3,7 @@ import { Tab, Tabs } from "@nextui-org/react";
 import { type ChapterNode } from "../queryBook";
 import Link from "next/link";
 import getExerciseURL from "./exercise/[exerciseId]/exerciseURL";
-import { ExerciseMeta } from "./chapterData";
+import { type ExerciseMeta } from "./chapterData";
 
 // TODO: 用戶可以出題
 function Exercises(props: { exercises: ExerciseMeta[]; node: ChapterNode }) {

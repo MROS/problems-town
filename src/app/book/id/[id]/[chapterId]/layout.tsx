@@ -15,7 +15,7 @@ type Props = {
 
 // TODO: 桌面版側邊欄顯示所有章節
 export default async function Layout({ params, children }: Props) {
-  const data = await getChapterData(params);
+  const data = await getChapterData(params.id, params.chapterId);
   const { node, nodes, book } = data;
 
   return (

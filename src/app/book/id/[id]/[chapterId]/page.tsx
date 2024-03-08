@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 // TODO: 桌面版側邊欄顯示所有章節
 export default async function Chapter({ params }: Props) {
-  const data = await getChapterData(params);
+  const data = await getChapterData(params.id, params.chapterId);
   const { exercises, node } = data;
 
   return (

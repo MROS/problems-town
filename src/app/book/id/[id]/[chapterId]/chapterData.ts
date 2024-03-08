@@ -8,8 +8,6 @@ import {
 import { type Exercise } from "@prisma/client";
 import { cache } from "react";
 
-type Params = { id: string; chapterId: string };
-
 export type ExerciseMeta = Pick<
   Exercise,
   "id" | "name" | "type" | "builtInOrder" | "builtInType"
@@ -22,13 +20,13 @@ export type ChapterData = BookData & {
 };
 
 export const getChapterData = cache(
-  async (params: Params): Promise<ChapterData> => {
-    const data = await getBookAndChapterNodes(params.id);
+  async (bookId: string, chapterId: string): Promise<ChapterData> => {
+    const data = await getBookAndChapterNodes(bookId);
     if (data == null) {
       notFound();
     }
     const { nodes } = data;
-    const node = nodes.get(params.chapterId);
+    const node = nodes.get(chapterId);
     if (node == undefined) {
       notFound();
     }
@@ -36,7 +34,7 @@ export const getChapterData = cache(
       redirect(`/book/id/${node.bookId}`);
     }
     const exercises = await db.exercise.findMany({
-      where: { chapterId: params.chapterId },
+      where: { chapterId },
       select: {
         id: true,
         name: true,

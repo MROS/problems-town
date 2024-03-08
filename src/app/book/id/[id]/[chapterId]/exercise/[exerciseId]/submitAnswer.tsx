@@ -1,12 +1,14 @@
 "use client";
 import { Button, Link, Spinner, Tab, Tabs, Textarea } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
   BsArrowsCollapseVertical,
   BsArrowsExpandVertical,
 } from "react-icons/bs";
 import { MyMarkdown } from "~/app/_components/myMarkdown";
+import { api } from "~/trpc/react";
 
 function AnswerTextArea(props: {
   answer: string;
@@ -35,9 +37,24 @@ function Preview(props: { answer: string }) {
   );
 }
 
-function AnswerForm() {
+function AnswerForm(props: { exerciseId: string }) {
+  const router = useRouter();
+  const pathname = usePathname();
   const [answer, setAnswer] = useState("");
   const [expandWidth, setExpandWidth] = useState(false);
+  const createAnswer = api.answer.create.useMutation();
+
+  const submit = () => {
+    createAnswer.mutate(
+      { exerciseId: props.exerciseId, text: answer },
+      {
+        onSuccess: () => {
+          router.push(`${pathname}/answer`);
+        },
+      },
+    );
+  };
+
   let wrapperClass = "relative h-96";
   if (expandWidth) {
     wrapperClass = "absolute left-0 w-full px-2 h-96";
@@ -78,8 +95,8 @@ function AnswerForm() {
           github 風格 的 Markdown 語法
         </Link>
         ，以及{" "}
-        <Link size="sm" target="_blank" href="https://www.mathjax.org/">
-          MathJax 數學式
+        <Link size="sm" target="_blank" href="https://katex.org/">
+          Katex 數學式
         </Link>
         （$$ 包夾） ，詳見
         <Link size="sm" target="_blank" href="/docs/markdown">
@@ -88,17 +105,20 @@ function AnswerForm() {
         。
       </span>
       <div className="flex flex-row justify-end pb-10">
-        <Button color="primary">繳交</Button>
+        <Button color="primary" onPress={submit}>
+          繳交
+        </Button>
+        {createAnswer.error?.message}
       </div>
     </div>
   );
 }
 
-export default function SubmitAnswer() {
-  const { status, data: session } = useSession();
+export default function SubmitAnswer(props: { exerciseId: string }) {
+  const { status } = useSession();
   switch (status) {
     case "authenticated":
-      return <AnswerForm />;
+      return <AnswerForm exerciseId={props.exerciseId} />;
     case "loading":
       return <Spinner />;
     case "unauthenticated":

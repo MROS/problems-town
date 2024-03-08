@@ -8,8 +8,13 @@ import getExerciseURL from "./exerciseURL";
 import SubmitAnswer from "./submitAnswer";
 import { type Exercise } from "@prisma/client";
 import { db } from "~/server/db";
+import { cache } from "react";
 
-type Params = { id: string; chapterId: string; exerciseId: string };
+type Params = {
+  id: string;
+  chapterId: string;
+  exerciseId: string;
+};
 
 type Props = {
   params: Params;
@@ -19,19 +24,30 @@ type ExerrciseData = ChapterData & {
   exercise: Exercise;
 };
 
-export async function getExerciseData(params: Params): Promise<ExerrciseData> {
-  const data = await getChapterData(params);
-  const exercise = await db.exercise.findUnique({
-    where: { id: params.exerciseId },
-  });
-  if (exercise == null) {
-    notFound();
-  }
-  return { ...data, exercise };
-}
+export const getExerciseData = cache(
+  async (
+    bookId: string,
+    chapterId: string,
+    exerciseId: string,
+  ): Promise<ExerrciseData> => {
+    const data = await getChapterData(bookId, chapterId);
+
+    const exercise = await db.exercise.findUnique({
+      where: { id: exerciseId },
+    });
+    if (exercise == null) {
+      notFound();
+    }
+    return { ...data, exercise };
+  },
+);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const data = await getExerciseData(params);
+  const data = await getExerciseData(
+    params.id,
+    params.chapterId,
+    params.exerciseId,
+  );
   const { node, exercise } = data;
   return {
     title: `${node.name} | ${exercise.name}`,
@@ -39,7 +55,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function Exercise({ params }: Props) {
-  const data = await getExerciseData(params);
+  const data = await getExerciseData(
+    params.id,
+    params.chapterId,
+    params.exerciseId,
+  );
   const { node, exercise } = data;
   const exerciseURL = getExerciseURL(node.bookId, node.id, params.exerciseId);
 
@@ -66,7 +86,7 @@ export default async function Exercise({ params }: Props) {
         <div>
           <h3 className="font-bold">作答</h3>
           <div className="mt-2">
-            <SubmitAnswer />
+            <SubmitAnswer exerciseId={exercise.id} />
           </div>
         </div>
       </div>

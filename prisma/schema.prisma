@@ -119,7 +119,6 @@ enum TextFormat {
 
 model Answer {
     id         Int        @id @default(autoincrement())
-    name       String
     format     TextFormat @default(MARKDOWN)
     text       String // 答案內容
     createDate DateTime   @default(now())
