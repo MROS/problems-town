@@ -50,6 +50,7 @@ function AnswerForm(props: { exerciseId: string }) {
       {
         onSuccess: () => {
           router.push(`${pathname}/answer`);
+          router.refresh();
         },
       },
     );
