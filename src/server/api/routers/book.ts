@@ -2,7 +2,7 @@ import {
   type Book,
   Prisma,
   type PrismaClient,
-  type ExerciseType,
+  type ExerciseOrigin,
 } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import assert from "assert";
@@ -12,7 +12,7 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 type ExerciseData = {
   name: string;
-  type: ExerciseType;
+  type: ExerciseOrigin;
   builtInOrder: number;
 };
 
@@ -30,7 +30,7 @@ function generateBuiltInExercises(exerciseNumber: number): ExerciseData[] {
   const exercises: ExerciseData[] = [];
   for (let i = 1; i <= exerciseNumber; i += 1) {
     exercises.push({
-      name: `習題 ${i}`, // TODO: 根據 Exercise.builtInType 來調整習題名字
+      name: `習題 ${i}`, // TODO: 根據 Exercise.category 來調整習題名字
       type: "BUILT_IN",
       builtInOrder: i,
     });

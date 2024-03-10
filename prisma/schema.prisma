@@ -82,7 +82,7 @@ model Chapter {
     bookId           Int
     book             Book    @relation(fields: [bookId], references: [id])
 
-    // TODO: 改爲 JSON 以應付不同的 builtInType
+    // TODO: 改爲 JSON 以應付不同的 category
     builtInExerciseNumber Int @default(0)
 
     parentId  String?
@@ -91,21 +91,21 @@ model Chapter {
     exercises Exercise[]
 }
 
-enum ExerciseType {
+enum ExerciseOrigin {
     BUILT_IN // 課本內建
     ORIGINAL // 鎮友原創
 }
 
 model Exercise {
-    id           String       @id @default(cuid())
-    type         ExerciseType @default(BUILT_IN)
+    id           String         @id @default(cuid())
+    origin       ExerciseOrigin @default(BUILT_IN)
     name         String
     chapterId    String
-    chapter      Chapter      @relation(fields: [chapterId], references: [id])
+    chapter      Chapter        @relation(fields: [chapterId], references: [id])
     description  String?
     builtInOrder Int? // 若爲內建習題，該欄位代表習題編號，若爲原創習題，該欄位爲空
-    builtInType  String? // 當一章中多種類型的習題，如分成計算題、證明題、申論題，用此欄位區分。
-    createDate   DateTime     @default(now())
+    category     String? // 當一章中有多種類型的習題，如分成計算題、證明題、申論題，用此欄位區分。
+    createDate   DateTime       @default(now())
 
     authorId String?
     author   User?   @relation(fields: [authorId], references: [id])

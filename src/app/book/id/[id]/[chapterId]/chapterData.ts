@@ -10,7 +10,7 @@ import { cache } from "react";
 
 export type ExerciseMeta = Pick<
   Exercise,
-  "id" | "name" | "type" | "builtInOrder" | "builtInType"
+  "id" | "name" | "origin" | "builtInOrder" | "category"
 >;
 
 // node 是代表當前 chapter 的 ChapterNode
@@ -38,9 +38,9 @@ export const getChapterData = cache(
       select: {
         id: true,
         name: true,
-        type: true,
+        origin: true,
         builtInOrder: true,
-        builtInType: true,
+        category: true,
       },
     });
     return { node, exercises, ...data };

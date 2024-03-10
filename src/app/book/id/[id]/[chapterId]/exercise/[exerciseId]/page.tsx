@@ -1,14 +1,10 @@
-import { notFound } from "next/navigation";
 import { type Metadata } from "next";
-import { getChapterData } from "~/app/book/id/[id]/[chapterId]/chapterData";
-import { type ChapterData } from "~/app/book/id/[id]/[chapterId]/chapterURL";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
 import SubmitAnswer from "./submitAnswer";
 import { type Exercise } from "@prisma/client";
-import { db } from "~/server/db";
-import { cache } from "react";
+import { getExerciseData } from "./exerciseData";
 
 type Params = {
   id: string;
@@ -19,28 +15,6 @@ type Params = {
 type Props = {
   params: Params;
 };
-
-type ExerrciseData = ChapterData & {
-  exercise: Exercise;
-};
-
-export const getExerciseData = cache(
-  async (
-    bookId: string,
-    chapterId: string,
-    exerciseId: string,
-  ): Promise<ExerrciseData> => {
-    const data = await getChapterData(bookId, chapterId);
-
-    const exercise = await db.exercise.findUnique({
-      where: { id: exerciseId },
-    });
-    if (exercise == null) {
-      notFound();
-    }
-    return { ...data, exercise };
-  },
-);
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const data = await getExerciseData(

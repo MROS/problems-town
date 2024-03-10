@@ -15,9 +15,9 @@ function Exercises(props: { exercises: ExerciseMeta[]; node: ChapterNode }) {
       </div>
     );
   }
-  // TODO: 支援原創習題、習題根據 builtInType 分羣
+  // TODO: 支援原創習題、習題根據 category 分羣
   const builtInExercises = props.exercises.filter(
-    (exercise) => exercise.type == "BUILT_IN",
+    (exercise) => exercise.origin == "BUILT_IN",
   );
   builtInExercises.sort(
     (a, b) => (a.builtInOrder ?? 0) - (b.builtInOrder ?? 0),

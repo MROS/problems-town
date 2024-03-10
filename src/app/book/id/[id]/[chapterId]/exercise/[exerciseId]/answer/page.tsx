@@ -3,8 +3,8 @@ import { Button } from "@nextui-org/react";
 import getExerciseURL from "../exerciseURL";
 import Link from "next/link";
 import { cache } from "react";
-import { Answer, Exercise, User } from "@prisma/client";
-import { ChapterData, getChapterData } from "../../../chapterData";
+import { type Answer, type Exercise, type User } from "@prisma/client";
+import { type ChapterData, getChapterData } from "../../../chapterData";
 import { db } from "~/server/db";
 import AnswerCard from "./answerCard";
 
@@ -21,7 +21,7 @@ type ExerrciseData = ChapterData & {
   };
 };
 
-export const getExerciseDataWithAnswer = cache(
+const getExerciseDataWithAnswer = cache(
   async (
     bookId: string,
     chapterId: string,
