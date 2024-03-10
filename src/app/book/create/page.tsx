@@ -11,7 +11,7 @@ import { useState } from "react";
 import { FaCircleInfo } from "react-icons/fa6";
 import { ArrayInput, ZodInput } from "~/app/_components/myInput";
 import { ImportContents } from "./importContentsModal";
-import { ContentsTree, type TreeNode } from "./contentsTree";
+import { ContentsTree, SetMaterialNames, type TreeNode } from "./contentsTree";
 import {
   type BookForm,
   writerSchema,
@@ -42,6 +42,7 @@ export default function NewBook() {
   const [bookISBN, setBookISBN] = useState("");
   const [bookPageNumber, setBookPageNumber] = useState("");
   const [publishedDate, setPublishedDate] = useState("");
+  const [materialNames, setMaterialNames] = useState<string[]>(["習題"]);
   const [bookContents, setBookContents] = useState<TreeNode[]>([]);
 
   const [submitError, setSubmitError] = useState<JSX.Element>(<></>);
@@ -59,6 +60,7 @@ export default function NewBook() {
         originalName: originalName,
         pageNumber: bookPageNumber.length == 0 ? null : bookPageNumber,
         ISBN: bookISBN,
+        materialNames: materialNames,
         TOCTree: bookContents,
       },
       {
@@ -210,7 +212,12 @@ export default function NewBook() {
               <div>書本的章節目錄，通常可以在賣書網站中找到</div>
             </span>
           </div>
+          <SetMaterialNames
+            materialNames={materialNames}
+            setMaterialNames={setMaterialNames}
+          />
           <ContentsTree
+            materialNames={materialNames}
             bookContents={bookContents}
             setBookContents={setBookContents}
           />

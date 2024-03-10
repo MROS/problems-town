@@ -5,23 +5,11 @@ import Link from "next/link";
 import getExerciseURL from "./exercise/[exerciseId]/exerciseURL";
 import { type ExerciseMeta } from "./chapterData";
 
-// TODO: 用戶可以出題
-function Exercises(props: { exercises: ExerciseMeta[]; node: ChapterNode }) {
+function ExerciseCategory(props: {
+  exercises: ExerciseMeta[];
+  node: ChapterNode;
+}) {
   const node = props.node;
-  if (node.builtInExerciseNumber == 0) {
-    return (
-      <div className="flex w-full flex-row justify-center p-4 text-gray-400">
-        本章無習題
-      </div>
-    );
-  }
-  // TODO: 支援原創習題、習題根據 category 分羣
-  const builtInExercises = props.exercises.filter(
-    (exercise) => exercise.origin == "BUILT_IN",
-  );
-  builtInExercises.sort(
-    (a, b) => (a.builtInOrder ?? 0) - (b.builtInOrder ?? 0),
-  );
   const exerciseComponents = [];
   for (const exercise of props.exercises) {
     exerciseComponents.push(
@@ -35,6 +23,63 @@ function Exercises(props: { exercises: ExerciseMeta[]; node: ChapterNode }) {
     );
   }
   return <div className="grid grid-cols-3">{exerciseComponents}</div>;
+}
+
+// TODO: 用戶可以出題
+function Exercises(props: { exercises: ExerciseMeta[]; node: ChapterNode }) {
+  const node = props.node;
+  if (props.exercises.length == 0) {
+    return (
+      <div className="flex w-full flex-row justify-center p-4 text-gray-400">
+        本章無習題
+      </div>
+    );
+  }
+  // TODO: 支援原創習題、習題根據 category 分羣
+  const builtInExercises = props.exercises.filter(
+    (exercise) => exercise.origin == "BUILT_IN",
+  );
+  builtInExercises.sort(
+    (a, b) => (a.builtInOrder ?? 0) - (b.builtInOrder ?? 0),
+  );
+  const exercisesNoCategory = [];
+  const exerciseMap = new Map<string, ExerciseMeta[]>();
+  for (const exercise of builtInExercises) {
+    if (exercise.category == null) {
+      exercisesNoCategory.push(exercise);
+      continue;
+    }
+
+    const list = exerciseMap.get(exercise.category);
+    if (list == undefined) {
+      exerciseMap.set(exercise.category, [exercise]);
+    } else {
+      list.push(exercise);
+    }
+  }
+  const categoryComponents: JSX.Element[] = [];
+  exerciseMap.forEach((exercises, category) => {
+    categoryComponents.push(
+      <div key={category} className="mt-6">
+        <h3 className="text-lg font-bold">{category}</h3>
+        <ExerciseCategory exercises={exercises} node={node} />
+      </div>,
+    );
+  });
+
+  return (
+    <div>
+      {exercisesNoCategory.length > 0 ? (
+        <div>
+          <h3 className="text-lg font-bold text-gray-500">無分類</h3>
+          <ExerciseCategory exercises={exercisesNoCategory} node={node} />
+        </div>
+      ) : (
+        <></>
+      )}
+      {categoryComponents}
+    </div>
+  );
 }
 
 export function ChapterTabs(props: {

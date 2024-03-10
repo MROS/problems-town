@@ -1,7 +1,10 @@
 import { z } from "~/utils/chineseZod";
 
 // 目錄樹 (react dnd treeview) 的 data 型別
-export const NodeDataSchema = z.object({ builtInExerciseNumber: z.number() });
+export const NodeDataSchema = z.object({
+  // 範例：chapterMaterial = {'計算題': 12, '證明題': 7}
+  chapterMaterials: z.record(z.string(), z.number()),
+});
 export type NodeData = z.infer<typeof NodeDataSchema>;
 
 const bookFormSchema = z.union([
@@ -47,6 +50,8 @@ export const pageNumberSchema = z
   })
   .pipe(z.number().min(1, "至少要有 1 頁"));
 
+const materialNamesSchema = z.string().min(1).array();
+
 // TODTree = table of contents tree = 目錄樹
 const TOCTreeNodeSchema = z.object({
   id: z.number().or(z.string()),
@@ -66,5 +71,6 @@ export const newBookSchema = z.object({
   ISBN: ISBNSchema,
   pageNumber: pageNumberSchema.nullable(),
   date: dateSchema.nullable(),
+  materialNames: materialNamesSchema,
   TOCTree: TOCTreeNodeSchema.array(),
 });

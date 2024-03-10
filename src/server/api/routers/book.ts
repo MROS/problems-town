@@ -12,40 +12,66 @@ import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 type ExerciseData = {
   name: string;
-  type: ExerciseOrigin;
+  category: string;
+  origin: ExerciseOrigin;
   builtInOrder: number;
+};
+
+type builtInExerciseMetaData = {
+  name: string;
+  count: number;
 };
 
 type ChapterData = {
   isRoot: boolean;
   indexInSameLevel: number;
   name: string;
-  builtInExerciseNumber?: number;
+  builtInMaterialMetas: { create: builtInExerciseMetaData[] };
   bookId: number;
   children: { create: ChapterData[] };
   exercises: { create: ExerciseData[] };
 };
 
-function generateBuiltInExercises(exerciseNumber: number): ExerciseData[] {
+function generateBuiltInExercises(
+  materials: Record<string, number>,
+  names: string[],
+): [builtInExerciseMetaData[], ExerciseData[]] {
   const exercises: ExerciseData[] = [];
-  for (let i = 1; i <= exerciseNumber; i += 1) {
-    exercises.push({
-      name: `習題 ${i}`, // TODO: 根據 Exercise.category 來調整習題名字
-      type: "BUILT_IN",
-      builtInOrder: i,
+  const exerciseMetas: builtInExerciseMetaData[] = [];
+  for (const name of names) {
+    const count = materials[name];
+    if (count == undefined || count <= 0) {
+      continue;
+    }
+    exerciseMetas.push({
+      name,
+      count,
     });
+    for (let i = 1; i <= count; i += 1) {
+      exercises.push({
+        name: `${name} ${i}`,
+        category: name,
+        origin: "BUILT_IN",
+        builtInOrder: i,
+      });
+    }
   }
-  return exercises;
+  return [exerciseMetas, exercises];
 }
 
-async function storeTOC(toc: TOCTreeNode[], book: Book, db: PrismaClient) {
+async function storeTOC(
+  toc: TOCTreeNode[],
+  book: Book,
+  materialNames: string[],
+  db: PrismaClient,
+) {
   // 1. 將 TreeNode[] 整理成 prisma nested write 所需的格式
   const nodes = new Map<number | string, ChapterData>();
   const root = {
     isRoot: true,
     indexInSameLevel: 0,
     name: book.name,
-    builtInExerciseNumber: 0,
+    builtInMaterialMetas: { create: [] },
     bookId: book.id,
     exercises: { create: [] },
     children: { create: [] },
@@ -53,16 +79,18 @@ async function storeTOC(toc: TOCTreeNode[], book: Book, db: PrismaClient) {
   nodes.set(0, root);
   // 初始化所有節點
   toc.forEach((node) => {
-    const builtInExerciseNumber = node.data?.builtInExerciseNumber;
-    const exercises =
-      builtInExerciseNumber == null
-        ? []
-        : generateBuiltInExercises(builtInExerciseNumber);
+    const rawExerciseMetas = node.data?.chapterMaterials;
+    const [exerciseMetas, exercises] =
+      rawExerciseMetas == null
+        ? [[], []]
+        : generateBuiltInExercises(rawExerciseMetas, materialNames);
     nodes.set(node.id, {
       isRoot: false,
       indexInSameLevel: -1, // 此時還不知道自己在同階層的位置
       name: node.text,
-      builtInExerciseNumber,
+      builtInMaterialMetas: {
+        create: exerciseMetas,
+      },
       bookId: book.id,
       exercises: {
         create: exercises,
@@ -109,7 +137,12 @@ export const bookRouter = createTRPCRouter({
             pageNumber: input.pageNumber,
           },
         });
-        await storeTOC(input.TOCTree, createBookResult, ctx.db);
+        await storeTOC(
+          input.TOCTree,
+          createBookResult,
+          input.materialNames,
+          ctx.db,
+        );
 
         return createBookResult.id;
       } catch (e) {

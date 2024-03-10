@@ -1,15 +1,23 @@
 import { db } from "~/server/db";
 import { cache } from "react";
-import { type Book, type Chapter } from "@prisma/client";
+import {
+  type builtInMaterialMeta,
+  type Book,
+  type Chapter,
+} from "@prisma/client";
 
-export type ChapterNode = Chapter & {
+type ChapterWithMaterialMeta = Chapter & {
+  builtInMaterialMetas: builtInMaterialMeta[];
+};
+
+export type ChapterNode = ChapterWithMaterialMeta & {
   children: ChapterNode[];
   parent: ChapterNode | null;
 };
 
 // TODO: 處理 chapters 爲空陣列的情形
 // 應返回 root == null
-function rebuildChapterNodes(chapters: Chapter[]): {
+function rebuildChapterNodes(chapters: ChapterWithMaterialMeta[]): {
   root: ChapterNode;
   nodes: Map<string, ChapterNode>;
 } {
@@ -57,7 +65,7 @@ function rebuildChapterNodes(chapters: Chapter[]): {
 export const queryBookById = cache(async (id: string) => {
   return await db.book.findUnique({
     where: { id: parseInt(id) },
-    include: { chapters: true },
+    include: { chapters: { include: { builtInMaterialMetas: true } } },
   });
 });
 

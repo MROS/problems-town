@@ -82,13 +82,19 @@ model Chapter {
     bookId           Int
     book             Book    @relation(fields: [bookId], references: [id])
 
-    // TODO: 改爲 JSON 以應付不同的 category
-    builtInExerciseNumber Int @default(0)
+    parentId             String?
+    parent               Chapter?              @relation("parentChildren", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
+    children             Chapter[]             @relation("parentChildren")
+    exercises            Exercise[]
+    builtInMaterialMetas BuiltInMaterialMeta[]
+}
 
-    parentId  String?
-    parent    Chapter?   @relation("parentChildren", fields: [parentId], references: [id], onDelete: Cascade) // 砍掉父節點，子節點也會跟着全被砍掉
-    children  Chapter[]  @relation("parentChildren")
-    exercises Exercise[]
+model BuiltInMaterialMeta {
+    id        Int     @id @default(autoincrement())
+    name      String
+    count     Int
+    chapterId String
+    chapter   Chapter @relation(fields: [chapterId], references: [id])
 }
 
 enum ExerciseOrigin {

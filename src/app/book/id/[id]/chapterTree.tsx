@@ -47,11 +47,11 @@ function ChapterLine(props: {
       >
         {node.name}
       </Link>
-      {node.builtInExerciseNumber > 0 && (
-        <Chip color="primary" className="ml-2" size="sm">
-          {node.builtInExerciseNumber} 道習題
+      {node.builtInMaterialMetas.map((material) => (
+        <Chip key={material.id} color="primary" className="ml-2" size="sm">
+          {material.count} 道{material.name}
         </Chip>
-      )}
+      ))}
     </div>
   );
 }
