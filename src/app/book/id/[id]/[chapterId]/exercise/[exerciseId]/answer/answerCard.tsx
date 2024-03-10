@@ -13,6 +13,7 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 import { IoMdMore } from "react-icons/io";
+import { relativeDate } from "~/utils/date";
 
 type AnswerWithAuthor = Answer & { author: User };
 
@@ -25,8 +26,7 @@ export default function AnswerCard(props: { answer: AnswerWithAuthor }) {
           <div>
             <div>{answer.author.name}</div>
             <div className="text-small text-gray-500">
-              {/* // TODO: 輸出中文相對日期 */}
-              {answer.createDate.toDateString()}
+              {relativeDate(answer.createDate)}
             </div>
           </div>
           <div>
@@ -37,6 +37,7 @@ export default function AnswerCard(props: { answer: AnswerWithAuthor }) {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu disabledKeys={["edit", "copy", "enter"]}>
+                <DropdownItem key="todo">TODO: 實作以下功能</DropdownItem>
                 <DropdownItem key="edit">編輯</DropdownItem>
                 <DropdownItem key="copy">複製網址</DropdownItem>
                 <DropdownItem key="enter">進入答案頁</DropdownItem>
@@ -50,12 +51,12 @@ export default function AnswerCard(props: { answer: AnswerWithAuthor }) {
       </CardBody>
       <CardFooter>
         <div className="grid w-full grid-cols-2 space-x-2">
-          <Button variant="bordered" size="sm">
+          {/* <Button variant="bordered" size="sm">
             批改
           </Button>
           <Button variant="bordered" size="sm">
             評論
-          </Button>
+          </Button> */}
         </div>
       </CardFooter>
     </Card>

@@ -31,7 +31,9 @@ export const getExerciseDataWithAnswer = cache(
 
     const exercise = await db.exercise.findUnique({
       where: { id: exerciseId },
-      include: { answers: { include: { author: true } } },
+      include: {
+        answers: { include: { author: true }, orderBy: { createDate: "desc" } },
+      },
     });
     if (exercise == null) {
       notFound();
