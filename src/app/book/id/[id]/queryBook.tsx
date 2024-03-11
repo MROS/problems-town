@@ -1,13 +1,13 @@
 import { db } from "~/server/db";
 import { cache } from "react";
 import {
-  type builtInMaterialMeta,
+  type BuiltInMaterialMeta,
   type Book,
   type Chapter,
 } from "@prisma/client";
 
 type ChapterWithMaterialMeta = Chapter & {
-  builtInMaterialMetas: builtInMaterialMeta[];
+  builtInMaterialMetas: BuiltInMaterialMeta[];
 };
 
 export type ChapterNode = ChapterWithMaterialMeta & {
