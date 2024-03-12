@@ -1,5 +1,6 @@
 import { Button, extendVariants, Input } from "@nextui-org/react";
 import React from "react";
+import { MdDelete } from "react-icons/md";
 import { type z } from "zod";
 
 export const MyInput = extendVariants(Input, {
@@ -64,22 +65,36 @@ export const ArrayInput = function ({
     <div>
       {values.map((value, index) => {
         return (
-          <OptionalZodInput
-            key={index}
-            value={value}
-            zodSchema={zodSchema}
-            onValueChange={(newValue) => {
-              const newValues = values.map((v, i) => {
-                if (i == index) {
-                  return newValue;
-                }
-                return v;
-              });
-              onValuesChange(newValues);
-            }}
-            {...props}
-            label={index == 0 ? props.label : null}
-          />
+          <div key={index} className="flex flex-row">
+            <OptionalZodInput
+              value={value}
+              zodSchema={zodSchema}
+              onValueChange={(newValue) => {
+                const newValues = values.map((v, i) => {
+                  if (i == index) {
+                    return newValue;
+                  }
+                  return v;
+                });
+                onValuesChange(newValues);
+              }}
+              {...props}
+              label={index == 0 ? props.label : null}
+            />
+            <Button
+              variant="bordered"
+              isIconOnly
+              className={index == 0 ? "self-end" : ""}
+              onPress={() => {
+                onValuesChange([
+                  ...values.slice(0, index),
+                  ...values.slice(index + 1),
+                ]);
+              }}
+            >
+              <MdDelete />
+            </Button>
+          </div>
         );
       })}
       <div className="mt-2 flex justify-end">
