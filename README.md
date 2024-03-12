@@ -23,6 +23,11 @@ cp .env.example .env
 vim .env                    # 依範例檔案中的註解，設定環境變數
 ```
 
+### 灌入預設資料（可選）
+``` sh
+pnpm prisma db seed
+```
+
 ### 啓動
 ``` sh
 pnpm i                      # 安裝 npm 套件

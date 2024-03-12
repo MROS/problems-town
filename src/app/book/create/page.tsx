@@ -50,37 +50,36 @@ export default function NewBook() {
   const createBook = api.book.create.useMutation();
 
   const submit = async () => {
-    createBook.mutate(
-      {
-        date: publishedDate.length == 0 ? null : publishedDate,
-        name: bookName,
-        form: bookForm,
-        authors: bookAuthors,
-        translators: bookTranslators,
-        originalName: originalName,
-        pageNumber: bookPageNumber.length == 0 ? null : bookPageNumber,
-        ISBN: bookISBN,
-        materialNames: materialNames,
-        TOCTree: bookContents,
+    const newBook = {
+      date: publishedDate.length == 0 ? null : publishedDate,
+      name: bookName,
+      form: bookForm,
+      authors: bookAuthors,
+      translators: bookTranslators,
+      originalName: originalName,
+      pageNumber: bookPageNumber.length == 0 ? null : bookPageNumber,
+      ISBN: bookISBN,
+      materialNames: materialNames,
+      TOCTree: bookContents,
+    };
+    console.log(JSON.stringify(newBook, null, 2));
+    createBook.mutate(newBook, {
+      onError: (opts) => {
+        if (opts.data?.code == "CONFLICT") {
+          const href = `${window.location.origin}/book/isbn/${bookISBN}`;
+          setSubmitError(
+            <div>
+              <Link href={href}>{href}</Link>
+            </div>,
+          );
+        } else {
+          setSubmitError(<></>);
+        }
       },
-      {
-        onError: (opts) => {
-          if (opts.data?.code == "CONFLICT") {
-            const href = `${window.location.origin}/book/isbn/${bookISBN}`;
-            setSubmitError(
-              <div>
-                <Link href={href}>{href}</Link>
-              </div>,
-            );
-          } else {
-            setSubmitError(<></>);
-          }
-        },
-        onSuccess: (id) => {
-          router.push(`/book/id/${id}`);
-        },
+      onSuccess: (id) => {
+        router.push(`/book/id/${id}`);
       },
-    );
+    });
   };
 
   return (
