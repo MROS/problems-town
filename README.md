@@ -23,11 +23,6 @@ cp .env.example .env
 vim .env                    # 依範例檔案中的註解，設定環境變數
 ```
 
-### 灌入預設資料（可選）
-``` sh
-pnpm prisma db seed
-```
-
 ### 啓動
 ``` sh
 pnpm i                      # 安裝 npm 套件
@@ -35,6 +30,12 @@ pnpm db:push                # 灌入資料庫 schema
 pnpm dev                    # 以開發模式啓動（即時編譯、熱更新）
 ```
 
+### 灌入預設資料（可選）
+``` sh
+pnpm prisma db seed
+```
+
+## 在正式環境啓動
 在正式環境中，應預編譯以優化打包體積：
 ``` sh
 pnpm build
