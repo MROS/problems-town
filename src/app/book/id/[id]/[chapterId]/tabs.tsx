@@ -1,5 +1,5 @@
 "use client";
-import { Tab, Tabs } from "@nextui-org/react";
+import { Chip, Tab, Tabs } from "@nextui-org/react";
 import { type ChapterNode } from "../queryBook";
 import Link from "next/link";
 import getExerciseURL from "./exercise/[exerciseId]/exerciseURL";
@@ -12,11 +12,17 @@ function ExerciseCategory(props: {
   const node = props.node;
   const exerciseComponents = [];
   for (const exercise of props.exercises) {
+    const answerCount = exercise._count.answers;
     exerciseComponents.push(
       <Link href={`${getExerciseURL(node.bookId, node.id, exercise.id)}`}>
         <div className="h-12 rounded-md px-1 hover:cursor-pointer hover:bg-gray-100">
-          <div className="flex h-full w-full items-center border-b px-1">
-            {exercise.name}
+          <div className="flex h-full w-full items-center justify-between border-b px-1">
+            <span>{exercise.name}</span>
+            {answerCount > 0 && (
+              <Chip variant="bordered" color="secondary">
+                {answerCount} 解
+              </Chip>
+            )}
           </div>
         </div>
       </Link>,

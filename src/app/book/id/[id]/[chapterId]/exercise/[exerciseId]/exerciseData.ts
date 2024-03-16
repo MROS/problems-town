@@ -6,7 +6,9 @@ import { db } from "~/server/db";
 import { cache } from "react";
 
 type ExerrciseData = ChapterData & {
-  exercise: Exercise;
+  exercise: Exercise & {
+    _count: { answers: number };
+  };
 };
 
 export const getExerciseData = cache(
@@ -19,6 +21,11 @@ export const getExerciseData = cache(
 
     const exercise = await db.exercise.findUnique({
       where: { id: exerciseId },
+      include: {
+        _count: {
+          select: { answers: true },
+        },
+      },
     });
     if (exercise == null) {
       notFound();

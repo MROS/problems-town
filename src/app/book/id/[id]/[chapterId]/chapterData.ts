@@ -11,7 +11,11 @@ import { cache } from "react";
 export type ExerciseMeta = Pick<
   Exercise,
   "id" | "name" | "origin" | "builtInOrder" | "category"
->;
+> & {
+  _count: {
+    answers: number;
+  };
+};
 
 // node 是代表當前 chapter 的 ChapterNode
 export type ChapterData = BookData & {
@@ -41,6 +45,9 @@ export const getChapterData = cache(
         origin: true,
         builtInOrder: true,
         category: true,
+        _count: {
+          select: { answers: true },
+        },
       },
     });
     return { node, exercises, ...data };
