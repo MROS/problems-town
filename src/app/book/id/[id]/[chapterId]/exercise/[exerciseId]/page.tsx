@@ -47,7 +47,7 @@ export default async function Exercise({ params }: Props) {
         </h2>
         {/* TODO: 顯示解答數量 */}
         <Button as={Link} href={`${exerciseURL}/answer`} size="sm">
-          查看解答
+          查看他人解答
         </Button>
       </div>
       <div className="mt-6 space-y-4">
