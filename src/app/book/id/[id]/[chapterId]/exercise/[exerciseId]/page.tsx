@@ -2,7 +2,7 @@ import { type Metadata } from "next";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
-import SubmitAnswer from "./submitAnswer";
+import AuthenticatedAnswerForm from "./answerForm";
 import { type Exercise } from "@prisma/client";
 import { getExerciseData } from "./exerciseData";
 
@@ -46,8 +46,15 @@ export default async function Exercise({ params }: Props) {
           </Link>
         </h2>
         {/* TODO: 顯示解答數量 */}
-        <Button as={Link} href={`${exerciseURL}/answer`} size="sm">
-          查看他人解答 ({exercise._count.answers})
+        <Button
+          variant="bordered"
+          color="secondary"
+          isDisabled={exercise._count.answers == 0}
+          as={Link}
+          href={`${exerciseURL}/answer`}
+          size="sm"
+        >
+          他人解答 ({exercise._count.answers})
         </Button>
       </div>
       <div className="mt-6 space-y-4">
@@ -59,8 +66,8 @@ export default async function Exercise({ params }: Props) {
         </div>
         <div>
           <h3 className="font-bold">作答</h3>
-          <div className="mt-2">
-            <SubmitAnswer exerciseId={exercise.id} />
+          <div className="mt-4">
+            <AuthenticatedAnswerForm exerciseId={exercise.id} />
           </div>
         </div>
       </div>

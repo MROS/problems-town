@@ -11,11 +11,23 @@ import {
   DropdownTrigger,
   DropdownMenu,
   DropdownItem,
+  Image,
 } from "@nextui-org/react";
 import { IoMdMore } from "react-icons/io";
 import { relativeDate } from "~/utils/date";
 
 type AnswerWithAuthor = Answer & { author: User };
+
+// 根據格式顯示答案
+function DisplayAnswer(props: { answer: AnswerWithAuthor }) {
+  const { answer } = props;
+  switch (answer.format) {
+    case "MARKDOWN":
+      return <MyMarkdown>{answer.text}</MyMarkdown>;
+    case "IMAGE_URL":
+      return <Image src={answer.text} alt="答案圖" />;
+  }
+}
 
 export default function AnswerCard(props: { answer: AnswerWithAuthor }) {
   const { answer } = props;
@@ -46,8 +58,8 @@ export default function AnswerCard(props: { answer: AnswerWithAuthor }) {
           </div>
         </div>
       </CardHeader>
-      <CardBody className="ppb-3">
-        <MyMarkdown>{answer.text}</MyMarkdown>
+      <CardBody>
+        <DisplayAnswer answer={answer} />
       </CardBody>
       <CardFooter>
         <div className="grid w-full grid-cols-2 space-x-2">

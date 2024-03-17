@@ -121,6 +121,7 @@ model Exercise {
 
 enum TextFormat {
     MARKDOWN
+    IMAGE_URL // 圖片網址
 }
 
 model Answer {
