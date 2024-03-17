@@ -2,7 +2,7 @@ import { type Metadata } from "next";
 import { Button } from "@nextui-org/react";
 import Link from "next/link";
 import getExerciseURL from "./exerciseURL";
-import AuthenticatedAnswerForm from "./answerForm";
+import AuthenticatedAnswerForm from "./createAnswer";
 import { type Exercise } from "@prisma/client";
 import { getExerciseData } from "./exerciseData";
 

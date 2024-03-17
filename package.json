@@ -43,7 +43,8 @@
     "server-only": "^0.0.1",
     "superjson": "^2.2.1",
     "zod": "^3.22.4",
-    "zod-i18n-map": "^2.27.0"
+    "zod-i18n-map": "^2.27.0",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
     "@mdx-js/loader": "^3.0.1",

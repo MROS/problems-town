@@ -1,16 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 "use client";
-import {
-  Button,
-  Link,
-  Radio,
-  RadioGroup,
-  Spinner,
-  Tab,
-  Tabs,
-  Textarea,
-} from "@nextui-org/react";
-import { useSession } from "next-auth/react";
+import { Button, Link, Tab, Tabs, Textarea } from "@nextui-org/react";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import {
@@ -19,7 +9,6 @@ import {
 } from "react-icons/bs";
 import { MyMarkdown } from "~/app/_components/myMarkdown";
 import { api } from "~/trpc/react";
-import ImageUrlAnswerForm from "./imageForm";
 
 function AnswerTextArea(props: {
   answer: string;
@@ -48,50 +37,7 @@ function Preview(props: { answer: string }) {
   );
 }
 
-enum AnswerType {
-  MARKDOWN = "MARKDOWN",
-  IMAGE_URL = "IMAGE_URL",
-}
-
-function AnswerForm(props: { exerciseId: string }) {
-  const [answerType, setAnswerType] = useState(AnswerType.MARKDOWN);
-  const imgbbApiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
-  console.log(imgbbApiKey);
-  return (
-    <div>
-      <RadioGroup
-        className="mb-6"
-        orientation="horizontal"
-        value={answerType}
-        onChange={(event) => setAnswerType(event.target.value as AnswerType)}
-      >
-        {/* // NOTE: 需保證 value 皆爲 AnswerType */}
-        <Radio value={AnswerType.MARKDOWN}>Markdown</Radio>
-        <Radio
-          isDisabled={imgbbApiKey == undefined}
-          value={AnswerType.IMAGE_URL}
-        >
-          {imgbbApiKey ? "圖片" : "圖片（未啓用）"}
-        </Radio>
-      </RadioGroup>
-      {(() => {
-        switch (answerType) {
-          case AnswerType.MARKDOWN:
-            return <MarkdownAnswerForm exerciseId={props.exerciseId} />;
-          case AnswerType.IMAGE_URL:
-            return (
-              <ImageUrlAnswerForm
-                exerciseId={props.exerciseId}
-                apiKey={imgbbApiKey!}
-              />
-            );
-        }
-      })()}
-    </div>
-  );
-}
-
-function MarkdownAnswerForm(props: { exerciseId: string }) {
+export default function MarkdownAnswerForm(props: { exerciseId: string }) {
   const router = useRouter();
   const pathname = usePathname();
   const [answer, setAnswer] = useState("");
@@ -167,16 +113,4 @@ function MarkdownAnswerForm(props: { exerciseId: string }) {
       </div>
     </div>
   );
-}
-
-export default function AuthenticatedAnswerForm(props: { exerciseId: string }) {
-  const { status } = useSession();
-  switch (status) {
-    case "authenticated":
-      return <AnswerForm exerciseId={props.exerciseId} />;
-    case "loading":
-      return <Spinner />;
-    case "unauthenticated":
-      return <div>請登入</div>;
-  }
 }
