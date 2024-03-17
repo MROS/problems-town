@@ -45,7 +45,6 @@ export default async function Exercise({ params }: Props) {
             {exercise.name}
           </Link>
         </h2>
-        {/* TODO: 顯示解答數量 */}
         <Button
           variant="bordered"
           color="secondary"

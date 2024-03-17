@@ -30,7 +30,7 @@ function AnswerTextArea(props: {
 
 function Preview(props: { answer: string }) {
   return (
-    <div className="markdown-body w-full overflow-auto text-wrap border-2 p-[8px]">
+    <div className="markdown-body h-full w-full overflow-auto text-wrap border-2 p-[8px]">
       {/* 加上 markdown-body 以啓用 ~/styles/github-markdow-light.css */}
       <MyMarkdown>{props.answer}</MyMarkdown>
     </div>
@@ -75,21 +75,23 @@ export default function MarkdownAnswerForm(props: { exerciseId: string }) {
           )}
         </Button>
       </div>
-      <Tabs variant="light">
-        <Tab title="撰寫">
-          <AnswerTextArea answer={answer} setAnswer={setAnswer} />
-        </Tab>
-        <Tab title="預覽">
-          <Preview answer={answer} />
-        </Tab>
-        <Tab title="並列">
-          {/* TODO: 同步捲動 */}
-          <div className="grid h-full grid-cols-2">
+      <div className="min-h-[485px]">
+        <Tabs variant="light">
+          <Tab title="撰寫">
             <AnswerTextArea answer={answer} setAnswer={setAnswer} />
+          </Tab>
+          <Tab title="預覽">
             <Preview answer={answer} />
-          </div>
-        </Tab>
-      </Tabs>
+          </Tab>
+          <Tab title="並列">
+            {/* TODO: 同步捲動 */}
+            <div className="grid h-full grid-cols-2">
+              <AnswerTextArea answer={answer} setAnswer={setAnswer} />
+              <Preview answer={answer} />
+            </div>
+          </Tab>
+        </Tabs>
+      </div>
       <span className="text-sm text-gray-500">
         習題支援{" "}
         <Link size="sm" target="_blank" href="https://github.github.com/gfm/">
