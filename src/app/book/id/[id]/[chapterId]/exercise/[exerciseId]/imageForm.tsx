@@ -1,4 +1,5 @@
 import { Button, Image, Spinner } from "@nextui-org/react";
+import assert from "assert";
 import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { api } from "~/trpc/react";
@@ -51,6 +52,55 @@ function getBase64(file: File): Promise<string> {
   });
 }
 
+// 上傳影像到 iamgeBB ，回傳 URL 陣列
+async function uploadToImagesBB(
+  apiKey: string,
+  files: HTMLInputElement["files"],
+  progressCallback: (index: number) => void,
+): Promise<string[]> {
+  if (files == undefined) {
+    return [];
+  }
+  const imageURLs = [];
+  for (let i = 0; i < files?.length; i++) {
+    progressCallback(i + 1);
+    const file = files.item(i);
+    assert(file != null, "file 索引在 FileList 長度內不可能爲空");
+
+    const imageBase64 = await getBase64(file);
+    const formData = new FormData();
+    formData.append("image", imageBase64.split(",")[1]!); // 刪掉 imageBase64 前置的 data:image/png;base64,
+    const url = `https://api.imgbb.com/1/upload?key=${apiKey}`;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const response: ImgbbResponse = await fetch(url, {
+      method: "post",
+      body: formData,
+    }).then((res) => res.json());
+    imageURLs.push(response.data.display_url);
+  }
+  return imageURLs;
+}
+
+function PreviewFiles(props: { files: HTMLInputElement["files"] }) {
+  const { files } = props;
+  if (files == undefined) {
+    return <></>;
+  }
+  const images = [];
+  for (let i = 0; i < files.length; i++) {
+    const file = files.item(i);
+    assert(file != null, "file 索引在 FileList 長度內不可能爲空");
+
+    images.push(
+      <Image
+        src={URL.createObjectURL(file)}
+        alt={`${file.name}圖片預覽`}
+      ></Image>,
+    );
+  }
+  return <div>{images}</div>;
+}
+
 export default function ImageUrlAnswerForm(props: {
   exerciseId: string;
   apiKey: string;
@@ -59,43 +109,37 @@ export default function ImageUrlAnswerForm(props: {
   const pathname = usePathname();
   const fileInput = useRef(null);
   const [files, setFiles] = useState<HTMLInputElement["files"]>(null);
-  const [uploading, setUploading] = useState(false);
+  const [uploadingIndex, setUploadingIndex] = useState(-1); // -1 代表沒有在上傳東西
   const [error, setError] = useState<null | Error>(null);
   const createAnswer = api.answer.create.useMutation();
-  const file = files?.item(0);
   return (
     <div>
       <div className="flex flex-row justify-between">
         <input
           ref={fileInput}
           type="file"
+          multiple
           name="image"
           accept="image/*"
           onChange={(event) => {
             setFiles(event.target.files);
           }}
         />
-        {file && (
+        {files && files.length > 0 && (
           <Button
             color="primary"
             onPress={async () => {
-              setUploading(true);
-              const imageBase64 = await getBase64(file);
-              const formData = new FormData();
-              formData.append("image", imageBase64.split(",")[1]!); // 刪掉 imageBase64 前置的 data:image/png;base64,
-              const url = `https://api.imgbb.com/1/upload?key=${props.apiKey}`;
+              setUploadingIndex(0);
               try {
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                const response: ImgbbResponse = await fetch(url, {
-                  method: "post",
-                  body: formData,
-                }).then((res) => res.json());
-                console.log(response.data.display_url);
-
+                const imageUrls = await uploadToImagesBB(
+                  props.apiKey,
+                  files,
+                  setUploadingIndex,
+                );
                 createAnswer.mutate(
                   {
                     exerciseId: props.exerciseId,
-                    text: response.data.display_url,
+                    text: imageUrls.join("\n"),
                     format: "IMAGE_URL",
                   },
                   {
@@ -106,7 +150,7 @@ export default function ImageUrlAnswerForm(props: {
                   },
                 );
 
-                setUploading(false);
+                setUploadingIndex(-1);
               } catch (error) {
                 console.error(error);
                 if (error instanceof Error) {
@@ -114,7 +158,7 @@ export default function ImageUrlAnswerForm(props: {
                 } else {
                   setError(new Error("未知錯誤，請查看主控臺"));
                 }
-                setUploading(false);
+                setUploadingIndex(-1);
               }
             }}
           >
@@ -122,13 +166,14 @@ export default function ImageUrlAnswerForm(props: {
           </Button>
         )}
       </div>
-      {uploading && (
+      {uploadingIndex >= 0 && (
         <div className="flex flex-row">
-          <Spinner /> 上傳中...
+          <Spinner className="mr-2" />
+          {`${uploadingIndex} / ${files?.length} 上傳中...`}
         </div>
       )}
       {error && <div>error.toString()</div>}
-      {file && <Image src={URL.createObjectURL(file)} alt="圖片預覽" />}
+      <PreviewFiles files={files} />
       <div className="mt-2 text-gray-500">僅支援 32 MB 以下圖片</div>
     </div>
   );

@@ -18,6 +18,16 @@ import { relativeDate } from "~/utils/date";
 
 type AnswerWithAuthor = Answer & { author: User };
 
+function Images(props: { URLs: string[] }) {
+  return (
+    <>
+      {props.URLs.map((URL, index) => (
+        <Image radius="none" key={index} src={URL} alt="答案圖" />
+      ))}
+    </>
+  );
+}
+
 // 根據格式顯示答案
 function DisplayAnswer(props: { answer: AnswerWithAuthor }) {
   const { answer } = props;
@@ -25,7 +35,8 @@ function DisplayAnswer(props: { answer: AnswerWithAuthor }) {
     case "MARKDOWN":
       return <MyMarkdown>{answer.text}</MyMarkdown>;
     case "IMAGE_URL":
-      return <Image src={answer.text} alt="答案圖" />;
+      const URLs = answer.text.split("\n");
+      return <Images URLs={URLs} />;
   }
 }
 
