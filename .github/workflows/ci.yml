@@ -1,0 +1,42 @@
+name: 持續整合
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  next-js-build:
+    runs-on: ubuntu-latest
+    environment: 持續整合
+    env:
+      DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID }}
+      DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+      NEXTAUTH_SECRET: 'nextauth-secret'
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: mypassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v1
+      with:
+        node-version: '20.x'
+    - uses: pnpm/action-setup@v3
+      with:
+        version: 8
+    - run: echo $DISCORD_CLIENT_ID
+    - run: cp .env.example .env
+    - run: pnpm i
+    - run: pnpm db:push
+    - run: pnpm lint
+    - run: pnpm build
+
