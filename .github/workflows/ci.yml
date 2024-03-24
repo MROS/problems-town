@@ -33,7 +33,6 @@ jobs:
     - uses: pnpm/action-setup@v3
       with:
         version: 8
-    - run: echo $DISCORD_CLIENT_ID
     - run: cp .env.example .env
     - run: pnpm i
     - run: pnpm db:push
