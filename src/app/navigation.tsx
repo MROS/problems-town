@@ -63,8 +63,8 @@ export default function Navigation() {
       </NavbarBrand>
       <NavbarContent className="gap-4 sm:flex" justify="center">
         {/* <NavbarContent className="hidden gap-4 sm:flex" justify="center"> */}
-        <NavbarItem isActive={category == "club"}>
-          <Link href="/club">讀書會</Link>
+        <NavbarItem isActive={category == "activity"}>
+          <Link href="/activity">活動</Link>
         </NavbarItem>
         <NavbarItem isActive={category == "book"}>
           <Link href="/book">藏書</Link>
