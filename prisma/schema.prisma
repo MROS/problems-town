@@ -51,10 +51,18 @@ model User {
     ActivityMember ActivityMember[]
 }
 
+enum ActivityStatus {
+    PREPARING @map("尚未開始")
+    ACTIVE @map("進行中")
+    CANCEL @map("取消")
+    ENDED  @map("已結束")
+}
+
 model Activity {
     id             Int              @id @default(autoincrement())
     name           String
     description    String
+    status ActivityStatus
     ActivityMember ActivityMember[]
 }
 
@@ -82,6 +90,8 @@ model VerificationToken {
 
     @@unique([identifier, token])
 }
+
+// TODO: 補上書本形式 enum
 
 model Book {
     id           Int       @id @default(autoincrement())

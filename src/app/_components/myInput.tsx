@@ -1,4 +1,4 @@
-import { Button, extendVariants, Input } from "@nextui-org/react";
+import { Button, extendVariants, Input, Textarea } from "@nextui-org/react";
 import React from "react";
 import { MdDelete } from "react-icons/md";
 import { type z } from "zod";
@@ -17,9 +17,27 @@ export const MyInput = extendVariants(Input, {
 });
 
 type MyInputProps = React.ComponentProps<typeof MyInput>;
+type TextareaProps = React.ComponentProps<typeof Textarea>;
 
 type AdditionalProps = {
   zodSchema: z.ZodType;
+};
+
+export const ZodTextarea = function ({
+  zodSchema,
+  ...props
+}: TextareaProps & AdditionalProps) {
+  // 在選填欄位輸入空字串，合法。
+  if (!props.isRequired && props.value?.length == 0) {
+    return <Textarea {...props} isInvalid={false} errorMessage={undefined} />;
+  }
+
+  const result = zodSchema.safeParse(props.value);
+  if (!result.success) {
+    const firstError = result.error.format()._errors[0];
+    return <Textarea {...props} isInvalid={true} errorMessage={firstError} />;
+  }
+  return <Textarea {...props} isInvalid={false} errorMessage={undefined} />;
 };
 
 export const ZodInput = function ({
@@ -34,7 +52,7 @@ export const ZodInput = function ({
   const result = zodSchema.safeParse(props.value);
   if (!result.success) {
     const firstError = result.error.format()._errors[0];
-    return <MyInput isInvalid={true} errorMessage={firstError} {...props} />;
+    return <MyInput {...props} isInvalid={true} errorMessage={firstError} />;
   }
   return <MyInput {...props} isInvalid={false} errorMessage={undefined} />;
 };
@@ -49,6 +67,7 @@ const OptionalZodInput = function ({
   return <MyInput {...props} />;
 };
 
+// TODO: 僅有一個 input 時不要顯示刪除按鈕
 export const ArrayInput = function ({
   addText,
   zodSchema,
