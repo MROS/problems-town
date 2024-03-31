@@ -51,18 +51,19 @@ model User {
     ActivityMember ActivityMember[]
 }
 
+// NOTE: prisma enum 不支援中文，只得在儲存層與顯示層做轉換
 enum ActivityStatus {
-    PREPARING @map("尚未開始")
-    ACTIVE @map("進行中")
-    CANCEL @map("取消")
-    ENDED  @map("已結束")
+    NOT_START // 尚未開始
+    ACTIVE // 進行中
+    CANCEL // 取消
+    ENDED // 已結束
 }
 
 model Activity {
     id             Int              @id @default(autoincrement())
     name           String
     description    String
-    status ActivityStatus
+    status         ActivityStatus
     ActivityMember ActivityMember[]
 }
 

@@ -1,10 +1,10 @@
 import { z } from "~/utils/chineseZod";
 
-const activityStatusSchema = z.union([
-  z.literal("尚未開始"),
-  z.literal("進行中"),
-  z.literal("取消"),
-  z.literal("已結束"),
+export const activityStatusSchema = z.union([
+  z.literal("NOT_START"),
+  z.literal("ACTIVE"),
+  z.literal("CANCEL"),
+  z.literal("ENDED"),
 ]);
 export type ActivityStatus = z.infer<typeof activityStatusSchema>;
 
