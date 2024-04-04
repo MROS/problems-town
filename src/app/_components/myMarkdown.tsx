@@ -34,6 +34,7 @@ export function MyMarkdown(props: MarkdownProps) {
   ];
   return (
     <Markdown
+      //@ts-expect-error 它這個套件 的 TypeScript 在亂寫吧 https://github.com/hashicorp/next-mdx-remote/issues/86
       remarkPlugins={remarkPlugins}
       rehypePlugins={[rehypeKatex]}
       {...props}

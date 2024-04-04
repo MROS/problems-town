@@ -1,6 +1,6 @@
 "use client";
 import { type Activity } from "@prisma/client";
-import { Button, Chip, Tab, Tabs } from "@nextui-org/react";
+import { Tab, Tabs } from "@nextui-org/react";
 import { MyMarkdown } from "~/app/_components/myMarkdown";
 
 type Props = {
