@@ -6,6 +6,7 @@ import { Chip } from "@nextui-org/react";
 import ActivityTabs from "./tabs";
 import JoinButton from "./joinButton";
 import { type ActivityRole } from "@prisma/client";
+import { relativeDate } from "~/utils/date";
 
 type Props = {
   params: { id: string };
@@ -23,6 +24,11 @@ export default async function ActivityById({ params }: Props) {
   const activity = await db.activity.findUnique({
     where: {
       id,
+    },
+    include: {
+      _count: {
+        select: { members: true },
+      },
     },
   });
 
@@ -56,6 +62,13 @@ export default async function ActivityById({ params }: Props) {
             {session && (
               <JoinButton joined={role != null} activityId={activity.id} />
             )}
+          </div>
+          <div className="text-gray-500">
+            <span>建立於{relativeDate(activity.createDate)}</span>．
+            <span className="font-bold hover:cursor-pointer hover:underline">
+              {/* TODO: 點擊後在 modal 顯示成員 */}
+              {activity._count.members} 名成員
+            </span>
           </div>
         </div>
         <ActivityTabs activity={activity} />
