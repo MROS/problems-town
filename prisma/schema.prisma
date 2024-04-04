@@ -60,10 +60,12 @@ enum ActivityStatus {
 }
 
 model Activity {
-    id             Int              @id @default(autoincrement())
-    name           String
-    description    String
-    status         ActivityStatus
+    id          Int            @id @default(autoincrement())
+    name        String
+    description String
+    status      ActivityStatus
+    createDate  DateTime       @default(now())
+
     ActivityMember ActivityMember[]
 }
 

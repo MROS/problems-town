@@ -9,7 +9,7 @@ import {
 import { ZodInput, ZodTextarea } from "~/app/_components/myInput";
 import { api } from "~/trpc/react";
 import { useRouter } from "next/navigation";
-import { activityStatusToDisplayName } from "../translation";
+import { DisplayactivityStatus } from "../translation";
 
 const STATUS: { name: ActivityStatus; disabled?: boolean }[] = [
   { name: "NOT_START" },
@@ -77,7 +77,7 @@ export default function NewActivity() {
                 const name = status.name;
                 return (
                   <SelectItem key={name} value={name}>
-                    {activityStatusToDisplayName(name)}
+                    {DisplayactivityStatus(name)}
                   </SelectItem>
                 );
               })}

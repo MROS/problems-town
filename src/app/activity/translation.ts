@@ -1,6 +1,6 @@
 import { type ActivityStatus } from "@prisma/client";
 
-export function activityStatusToDisplayName(status: ActivityStatus) {
+export function DisplayactivityStatus(status: ActivityStatus) {
   switch (status) {
     case "NOT_START":
       return "尚未開始";
