@@ -7,17 +7,21 @@ export const metadata = {
   title: "活動 | 做題小鎮",
 };
 
+function ShowActivity({ activity }: { activity: Activity }) {
+  return (
+    <div>
+      <Link href={`/activity/${activity.id}`}>{activity.name}</Link>
+    </div>
+  );
+}
+
 function ShowActivities({ activities }: { activities: Activity[] }) {
   // TODO: 顯示活動的更多資訊
   return (
     <div>
-      {activities.map((activity) => {
-        return (
-          <div key={activity.id}>
-            <Link href={`/activity/${activity.id}`}>{activity.name}</Link>
-          </div>
-        );
-      })}
+      {activities.map((activity) => (
+        <ShowActivity key={activity.id} activity={activity} />
+      ))}
     </div>
   );
 }

@@ -21,6 +21,8 @@ export default async function ActivityById({ params }: Props) {
   }
 
   const session = await getServerAuthSession();
+  const members = session ? { where: { userId: session.user.id } } : false;
+
   const activity = await db.activity.findUnique({
     where: {
       id,
@@ -29,21 +31,11 @@ export default async function ActivityById({ params }: Props) {
       _count: {
         select: { members: true },
       },
+      members,
     },
   });
 
-  let role: ActivityRole | null = null;
-  if (session) {
-    const activityMember = await db.activityMembers.findFirst({
-      where: {
-        activityId: id,
-        userId: session.user.id,
-      },
-    });
-    if (activityMember) {
-      role = activityMember.role;
-    }
-  }
+  const role: ActivityRole | undefined = activity?.members[0]?.role;
 
   if (activity == null) {
     notFound();
