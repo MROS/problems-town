@@ -90,7 +90,7 @@ export default function NewActivity() {
               maxRows={30}
               labelPlacement="outside"
               placeholder="請闡述活動的宗旨、目標、進行方式。支援 Markdown 格式。"
-              label="活動內容（選填）"
+              label="活動內容"
             />
           </div>
           <Divider className="mb-4" />
