@@ -16,7 +16,7 @@ const baseComplexNodeSchema = z.object({
   name: z.string(),
 });
 
-type ComplexNode = z.infer<typeof baseComplexNodeSchema> & {
+export type ComplexNode = z.infer<typeof baseComplexNodeSchema> & {
   children: Node[];
 };
 

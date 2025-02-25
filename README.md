@@ -42,6 +42,14 @@ pnpm build
 pnpm start
 ```
 
+## 腳本
+
+### 解析 pdf 目錄，輸出做題小鎮所需格式
+
+``` sh
+pnpm extract-pdf [pdf 檔名]
+```
+
 
 ## 技術棧
 
